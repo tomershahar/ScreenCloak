@@ -1,0 +1,59 @@
+# SafeStream Configuration
+
+# OCR Settings
+ocr:
+  engine: "auto"  # auto, paddleocr, easyocr, tesseract
+  gpu_enabled: true
+  frame_sample_rate: 5  # Process every Nth frame
+
+# Detection Settings
+detection:
+  seed_phrases:
+    enabled: true
+    min_word_count: 12  # Require 12 or 24 word sequences
+
+  credit_cards:
+    enabled: true
+
+  crypto_addresses:
+    enabled: true
+    networks: ["BTC", "ETH", "SOL"]
+
+  api_keys:
+    enabled: false  # Paid tier feature
+
+  personal_strings:
+    enabled: true
+    max_free: 3  # Free tier limit
+    strings:
+      # Add your personal info to detect (examples):
+      # - "John Doe"
+      # - "johndoe@email.com"
+      # - "555-123-4567"
+    fuzzy_threshold: 85  # 0-100, lower = more lenient matching
+
+# Screen Capture
+capture:
+  monitor: 1  # 0 = all monitors, 1 = primary, 2 = secondary, etc.
+  roi_enabled: true  # Only OCR changed regions
+
+# OBS Integration
+obs:
+  enabled: true
+  host: "localhost"
+  port: 4455
+  password: ""
+  privacy_scene: "Privacy Mode"  # Scene to switch to on detection
+  auto_return: true  # Return to previous scene after N seconds
+  return_delay: 3
+
+# Privacy & Logging
+privacy:
+  log_detections: true
+  log_sanitized: true  # Log "[REDACTED]" instead of actual data
+  telemetry_opt_in: false
+
+# Performance
+performance:
+  max_latency_ms: 500  # Warn if OCR takes longer
+  memory_limit_mb: 2048  # Restart OCR engine if exceeded

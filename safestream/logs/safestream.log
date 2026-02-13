@@ -1,0 +1,180 @@
+2026-02-12 20:42:50 - safestream - DEBUG - logger.py:196 - This is a debug message
+2026-02-12 20:42:50 - safestream - INFO - logger.py:197 - SafeStream logging initialized
+2026-02-12 20:42:50 - safestream - WARNING - logger.py:198 - This is a warning
+2026-02-12 20:42:50 - safestream - ERROR - logger.py:199 - This is an error
+2026-02-12 20:42:50 - safestream - INFO - logger.py:215 - Detection stats: {'total_detections': 2, 'by_type': {'seed_phrase': 2}, 'by_action': {'blur': 2}}
+2026-02-13 16:53:09 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 16:53:09 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 16:53:09 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 16:53:09 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 16:53:09 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 16:53:09 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 16:53:10 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 16:53:10 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 16:53:10 - safestream.detector - DEBUG - detector.py:66 - Loaded SeedPhraseDetector
+2026-02-13 16:53:10 - safestream.detector - DEBUG - detector.py:70 - Loaded CreditCardDetector
+2026-02-13 16:53:10 - safestream.detector - DEBUG - detector.py:74 - Loaded CryptoAddressDetector
+2026-02-13 16:53:10 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 16:53:10 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 16:53:10 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 16:53:10 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 16:53:10 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 16:53:10 - safestream.capture - DEBUG - capture.py:210 - MockCapture: returned frame from seed_phrase_12word.png
+2026-02-13 16:53:10 - safestream - DEBUG - main.py:236 - Frame 1: OCR found 8 text region(s)
+2026-02-13 16:53:10 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 16:53:10 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 16:58:11 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 16:58:11 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 16:58:11 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 16:58:11 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 16:58:11 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 16:58:11 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 16:58:12 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 16:58:12 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 16:58:12 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 16:58:12 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 16:58:12 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 16:58:12 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 16:58:12 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 16:58:12 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 16:58:12 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 16:58:19 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 16:58:19 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 16:58:19 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 16:58:19 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 16:58:19 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 16:58:19 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 16:58:19 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 16:58:19 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 16:58:19 - safestream.detector - DEBUG - detector.py:66 - Loaded SeedPhraseDetector
+2026-02-13 16:58:19 - safestream.detector - DEBUG - detector.py:70 - Loaded CreditCardDetector
+2026-02-13 16:58:19 - safestream.detector - DEBUG - detector.py:74 - Loaded CryptoAddressDetector
+2026-02-13 16:58:19 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 16:58:19 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 16:58:19 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 16:58:19 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 16:58:19 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 16:58:19 - safestream.capture - DEBUG - capture.py:210 - MockCapture: returned frame from seed_phrase_12word.png
+2026-02-13 16:58:19 - safestream - DEBUG - main.py:236 - Frame 1: OCR found 11 text region(s)
+2026-02-13 16:58:19 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 16:58:19 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 16:58:22 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 16:58:22 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 16:58:23 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 16:58:23 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 16:58:23 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 16:58:23 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 16:58:23 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 16:58:23 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 16:58:23 - safestream.detector - DEBUG - detector.py:66 - Loaded SeedPhraseDetector
+2026-02-13 16:58:23 - safestream.detector - DEBUG - detector.py:70 - Loaded CreditCardDetector
+2026-02-13 16:58:23 - safestream.detector - DEBUG - detector.py:74 - Loaded CryptoAddressDetector
+2026-02-13 16:58:23 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 16:58:23 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 16:58:23 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 16:58:23 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 16:58:23 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 16:58:23 - safestream.capture - DEBUG - capture.py:210 - MockCapture: returned frame from seed_phrase_12word.png
+2026-02-13 16:58:23 - safestream - DEBUG - main.py:236 - Frame 1: OCR found 11 text region(s)
+2026-02-13 16:58:23 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 16:58:23 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 17:01:48 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:01:48 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:01:48 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:01:48 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/credit_card_visa.png
+2026-02-13 17:01:48 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:01:48 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:01:49 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:01:49 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:01:49 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:01:49 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:01:49 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:01:49 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:01:49 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:01:49 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 17:01:49 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 17:06:04 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:06:04 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:06:04 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:06:04 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/credit_card_visa.png
+2026-02-13 17:06:04 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:06:04 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:06:04 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:06:04 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:06:04 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:06:04 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:06:04 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:06:04 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:06:04 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:06:04 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 17:06:04 - safestream - INFO - main.py:324 - SafeStream shut down cleanly
+2026-02-13 17:06:04 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:06:04 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:06:04 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:06:04 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 17:06:04 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:06:04 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:06:05 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:06:05 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:06:05 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:06:05 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:06:05 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:06:05 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:06:05 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:06:54 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:06:54 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:06:54 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:06:54 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 17:06:54 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:06:54 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:06:54 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:06:54 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:06:54 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:06:54 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:06:54 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:06:54 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:06:54 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:07:08 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:07:08 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:07:08 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:07:08 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 17:07:08 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:07:08 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:07:08 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:07:08 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:07:08 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:07:08 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:07:08 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:07:08 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:07:08 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:07:22 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:07:22 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:07:22 - safestream.capture - INFO - capture.py:186 - MockCapture ready — 1 image(s)
+2026-02-13 17:07:22 - safestream - INFO - main.py:133 - Mock mode: reading from data/test_images/seed_phrase_12word.png
+2026-02-13 17:07:22 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:07:22 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:07:22 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:07:22 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:07:22 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:07:22 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:07:22 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:07:22 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--mock mode)
+2026-02-13 17:07:22 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:07:22 - safestream - WARNING - main.py:293 - DETECTION [seed_phrase] confidence=0.95 action=blur — triggering Privacy Mode
+2026-02-13 17:07:22 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 1 total detections
+2026-02-13 17:07:22 - safestream - INFO - main.py:330 - SafeStream shut down cleanly
+2026-02-13 17:07:36 - safestream - INFO - main.py:124 - SafeStream starting up
+2026-02-13 17:07:36 - safestream - INFO - main.py:125 - Config: config.yaml
+2026-02-13 17:07:36 - safestream.capture - INFO - capture.py:103 - ScreenCapture ready — monitor 1 (1470×956)
+2026-02-13 17:07:36 - safestream - INFO - main.py:135 - Live screen capture enabled
+2026-02-13 17:07:36 - safestream - INFO - main.py:140 - Loading OCR engine: tesseract
+2026-02-13 17:07:36 - safestream.ocr_engine - INFO - ocr_engine.py:400 - OCREngineFactory: creating TesseractEngine (explicit config)
+2026-02-13 17:07:36 - safestream.ocr_engine - INFO - ocr_engine.py:157 - TesseractEngine initialised
+2026-02-13 17:07:36 - safestream - INFO - main.py:142 - OCR engine ready: tesseract
+2026-02-13 17:07:36 - safestream.detector - INFO - detector.py:84 - Detector pipeline ready: 3 detectors loaded
+2026-02-13 17:07:36 - safestream - INFO - main.py:148 - Detector pipeline ready: 3 detectors
+2026-02-13 17:07:36 - safestream - INFO - main.py:156 - Frame differencing enabled
+2026-02-13 17:07:36 - safestream - INFO - main.py:165 - OBS: using MockOBSClient (--no-obs flag)
+2026-02-13 17:07:36 - safestream - INFO - main.py:201 - Scan loop started — processing ~5 frame(s)/s
+2026-02-13 17:07:37 - safestream - INFO - main.py:264 - Scan loop stopped — 1 frames processed, 0 total detections
+2026-02-13 17:07:37 - safestream - INFO - main.py:330 - SafeStream shut down cleanly

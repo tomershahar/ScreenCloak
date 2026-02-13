@@ -1,0 +1,171 @@
+{
+  "_comment": "API key regex patterns for SafeStream detection. Paid tier feature.",
+  "_format": "Each entry: { 'pattern': regex, 'description': human-readable, 'confidence': 0.0-1.0 }",
+
+  "AWS": [
+    {
+      "pattern": "AKIA[0-9A-Z]{16}",
+      "description": "AWS Access Key ID",
+      "confidence": 0.95
+    },
+    {
+      "pattern": "(?i)aws.{0,20}['\"][0-9a-zA-Z\\/+]{40}['\"]",
+      "description": "AWS Secret Access Key",
+      "confidence": 0.90
+    }
+  ],
+
+  "GitHub": [
+    {
+      "pattern": "ghp_[0-9a-zA-Z]{36}",
+      "description": "GitHub Personal Access Token",
+      "confidence": 0.98
+    },
+    {
+      "pattern": "gho_[0-9a-zA-Z]{36}",
+      "description": "GitHub OAuth Token",
+      "confidence": 0.98
+    },
+    {
+      "pattern": "ghs_[0-9a-zA-Z]{36}",
+      "description": "GitHub App Token",
+      "confidence": 0.98
+    },
+    {
+      "pattern": "github_pat_[0-9a-zA-Z_]{82}",
+      "description": "GitHub Fine-grained PAT",
+      "confidence": 0.99
+    }
+  ],
+
+  "Stripe": [
+    {
+      "pattern": "sk_live_[0-9a-zA-Z]{24,}",
+      "description": "Stripe Live Secret Key",
+      "confidence": 0.99
+    },
+    {
+      "pattern": "sk_test_[0-9a-zA-Z]{24,}",
+      "description": "Stripe Test Secret Key",
+      "confidence": 0.95
+    },
+    {
+      "pattern": "rk_live_[0-9a-zA-Z]{24,}",
+      "description": "Stripe Restricted Key (live)",
+      "confidence": 0.99
+    }
+  ],
+
+  "OpenAI": [
+    {
+      "pattern": "sk-[0-9a-zA-Z]{48}",
+      "description": "OpenAI API Key",
+      "confidence": 0.90
+    },
+    {
+      "pattern": "sk-proj-[0-9a-zA-Z\\-_]{80,}",
+      "description": "OpenAI Project API Key",
+      "confidence": 0.95
+    }
+  ],
+
+  "Anthropic": [
+    {
+      "pattern": "sk-ant-[0-9a-zA-Z\\-_]{80,}",
+      "description": "Anthropic API Key",
+      "confidence": 0.99
+    }
+  ],
+
+  "Google": [
+    {
+      "pattern": "AIza[0-9A-Za-z\\-_]{35}",
+      "description": "Google API Key",
+      "confidence": 0.95
+    },
+    {
+      "pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+      "description": "Google OAuth Client ID",
+      "confidence": 0.95
+    }
+  ],
+
+  "Slack": [
+    {
+      "pattern": "xoxb-[0-9]{11}-[0-9]{11}-[0-9a-zA-Z]{24}",
+      "description": "Slack Bot Token",
+      "confidence": 0.99
+    },
+    {
+      "pattern": "xoxp-[0-9]{11}-[0-9]{11}-[0-9]{11}-[0-9a-zA-Z]{32}",
+      "description": "Slack User Token",
+      "confidence": 0.99
+    },
+    {
+      "pattern": "xapp-[0-9]-[A-Z0-9]{10}-[0-9]{11}-[0-9a-f]{64}",
+      "description": "Slack App Token",
+      "confidence": 0.99
+    }
+  ],
+
+  "Twilio": [
+    {
+      "pattern": "AC[0-9a-fA-F]{32}",
+      "description": "Twilio Account SID",
+      "confidence": 0.90
+    },
+    {
+      "pattern": "SK[0-9a-fA-F]{32}",
+      "description": "Twilio API Key SID",
+      "confidence": 0.90
+    }
+  ],
+
+  "SendGrid": [
+    {
+      "pattern": "SG\\.[0-9a-zA-Z\\-_]{22}\\.[0-9a-zA-Z\\-_]{43}",
+      "description": "SendGrid API Key",
+      "confidence": 0.99
+    }
+  ],
+
+  "Cloudflare": [
+    {
+      "pattern": "[0-9a-f]{37}",
+      "description": "Cloudflare API Token (length heuristic)",
+      "confidence": 0.60
+    }
+  ],
+
+  "DigitalOcean": [
+    {
+      "pattern": "dop_v1_[0-9a-f]{64}",
+      "description": "DigitalOcean Personal Access Token",
+      "confidence": 0.99
+    }
+  ],
+
+  "Heroku": [
+    {
+      "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+      "description": "Heroku API Key (UUID format)",
+      "confidence": 0.70
+    }
+  ],
+
+  "NPM": [
+    {
+      "pattern": "npm_[0-9a-zA-Z]{36}",
+      "description": "NPM Access Token",
+      "confidence": 0.99
+    }
+  ],
+
+  "Discord": [
+    {
+      "pattern": "[MN][A-Za-z\\d]{23}\\.[\\w-]{6}\\.[\\w-]{27}",
+      "description": "Discord Bot Token",
+      "confidence": 0.95
+    }
+  ]
+}
