@@ -114,6 +114,8 @@ sudo apt install tesseract-ocr
 
 ### Step 3: Configure OBS
 
+> See the full [OBS Setup Guide](../docs/OBS_SETUP.md) for screenshots and troubleshooting.
+
 **3a. Enable OBS WebSocket:**
 1. In OBS, go to `Tools → WebSocket Server Settings`
 2. Enable WebSocket server
@@ -169,21 +171,32 @@ python main.py --mock data/test_images/seed_phrase_12word.png
 
 ## Benchmarking Your Setup
 
-Before you go live, run the OCR benchmark to see your actual detection speed (your exposure window):
+Before you go live, run the detection benchmark to verify accuracy and latency on your machine:
 
 ```bash
-python benchmark_ocr.py
+python3 tests/benchmark.py
 ```
 
 Example output:
 ```
-LATENCY SUMMARY
-  P50 (median): 180ms
-  P95:          310ms
+SafeStream Detection Benchmark
+========================================================================
+  PASS  seed_phrase_12word.png   detected=seed_phrase    e2e=84ms
+  PASS  credit_card_visa.png     detected=credit_card    e2e=66ms
+  PASS  eth_address.png          detected=crypto_address e2e=66ms
+  PASS  false_positive_essay.png detected=(none)         e2e=118ms
 
-VERDICT
-  ✅ PASS - P95 latency (310ms) < 500ms target
-  With your 5-second stream delay, exposure window is ~310ms
+SUMMARY
+  True Positive Rate:   5/5  (100.0%)
+  False Positive Rate:  0/1  (0.0%)
+  E2E P95 latency:      118ms
+
+VERDICT: ✅ OVERALL PASS — SafeStream meets M1 acceptance criteria
+```
+
+To benchmark raw OCR engine performance (latency only, no detection pipeline):
+```bash
+python3 benchmark_ocr.py
 ```
 
 **The lower your P95 latency, the smaller your exposure window.** Apple Silicon with MPS acceleration typically achieves 100–200ms.

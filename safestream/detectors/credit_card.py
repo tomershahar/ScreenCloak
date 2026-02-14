@@ -45,56 +45,56 @@ class CreditCardDetector(BaseDetector):
         if not ocr_results:
             return []
 
-        detections: list[DetectionResult] = []
-
         # Combine all OCR text into a single string with positions
         combined_text = " ".join([r.text for r in ocr_results])
 
         # Apply fuzzy digit cleanup to handle OCR errors
         cleaned_text = self._fuzzy_digit_cleanup(combined_text)
 
-        # Regex for 16-digit sequences (with optional spaces/dashes)
-        # Matches: 4532-1488-0343-6467, 4532 1488 0343 6467, 4532148803436467
+        # Find candidate card numbers via two complementary methods:
+        # 1. Regex: standard 4-4-4-4 grouping (handles well-spaced OCR output)
+        # 2. Digit stream: sliding 16-char window over all digits (handles OCR
+        #    that merges adjacent groups, e.g. "4111 1111" → "444111111")
+        found_card_numbers: set[str] = set()
+
         pattern = r"\b\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b"
-
         for match in re.finditer(pattern, cleaned_text):
-            # Extract and normalize card number (remove spaces and dashes)
-            card_text = match.group()
-            card_number = card_text.replace(" ", "").replace("-", "")
+            card_number = match.group().replace(" ", "").replace("-", "")
+            found_card_numbers.add(card_number)
 
+        # Digit-stream fallback: strip all non-digits, slide a 16-char window
+        digits_only = re.sub(r"\D", "", cleaned_text)
+        for i in range(len(digits_only) - 15):
+            found_card_numbers.add(digits_only[i : i + 16])
+
+        detections: list[DetectionResult] = []
+
+        for card_number in found_card_numbers:
             # Validate with Luhn algorithm
             if not self._luhn_check(card_number):
-                continue  # Not a valid card number
+                continue
 
-            # Find the bounding box for this match
-            # Approximate position based on character offset
-            bbox = self._find_bbox_for_text(card_text, ocr_results)
-
+            # Find the bounding box (searches for 4-digit substrings in OCR tokens)
+            bbox = self._find_bbox_for_text(card_number, ocr_results)
             if not bbox:
-                continue  # Could not locate text in OCR results
+                continue
 
-            # Check for nearby expiration date (confidence boost)
+            # Check for nearby expiration date / CVV (confidence boost)
             nearby_text = self._get_nearby_text(bbox, ocr_results, radius=100)
             has_expiry = self._has_expiry_pattern(nearby_text)
             has_cvv = self._has_cvv_pattern(nearby_text)
 
-            # Calculate confidence
-            confidence = 0.80  # Base confidence for Luhn-valid card
+            confidence = 0.80
             if has_expiry:
-                confidence += 0.10  # Boost if expiry found
+                confidence += 0.10
             if has_cvv:
-                confidence += 0.05  # Boost if CVV found
+                confidence += 0.05
+            confidence = min(confidence, 0.95)
 
-            confidence = min(confidence, 0.95)  # Cap at 0.95
-
-            # Create text preview (first 4 and last 4 digits)
-            text_preview = f"{card_number[:4]}...{card_number[-4:]}"
-
-            # Create detection result
-            detection = DetectionResult(
+            detections.append(DetectionResult(
                 type="credit_card",
                 confidence=confidence,
-                text_preview=text_preview,
+                text_preview=f"{card_number[:4]}...{card_number[-4:]}",
                 bounding_box=bbox,
                 action="blur" if confidence >= 0.9 else "warn",
                 metadata={
@@ -103,9 +103,7 @@ class CreditCardDetector(BaseDetector):
                     "has_cvv": has_cvv,
                     "card_network": self._detect_card_network(card_number),
                 },
-            )
-
-            detections.append(detection)
+            ))
 
         return detections
 
