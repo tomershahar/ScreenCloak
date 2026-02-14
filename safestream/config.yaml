@@ -2,9 +2,9 @@
 
 # OCR Settings
 ocr:
-  engine: "auto"  # auto, paddleocr, easyocr, tesseract
+  engine: "tesseract"  # auto, paddleocr, easyocr, tesseract
   gpu_enabled: true
-  frame_sample_rate: 5  # Process every Nth frame
+  frame_sample_rate: 10  # Process every Nth frame
 
 # Detection Settings
 detection:
@@ -42,7 +42,7 @@ obs:
   enabled: true
   host: "localhost"
   port: 4455
-  password: ""
+  password: ""  # Set your OBS WebSocket password here
   privacy_scene: "Privacy Mode"  # Scene to switch to on detection
   auto_return: true  # Return to previous scene after N seconds
   return_delay: 3
