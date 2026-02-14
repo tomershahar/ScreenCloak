@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from core.bundle_paths import setup as _bundle_setup
+
 import argparse
 import logging
 import signal
@@ -336,8 +338,14 @@ class SafeStream:
 
 
 def main() -> int:
+    _PATHS = _bundle_setup()
+
     parser = _build_parser()
     args = parser.parse_args()
+
+    # Resolve config path: use CLI override if provided, otherwise use bundle-resolved path
+    if args.config == "config.yaml":
+        args.config = str(_PATHS.config_dir / "config.yaml")
 
     app = SafeStream(args)
 
