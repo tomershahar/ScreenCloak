@@ -59,7 +59,12 @@ def setup() -> AppPaths:
             import pytesseract
             pytesseract.pytesseract.tesseract_cmd = str(paths.tesseract_cmd)
         except ImportError:
-            pass
+            if getattr(sys, "frozen", False):
+                raise RuntimeError(
+                    "pytesseract is missing from the SafeStream bundle. "
+                    "Re-run PyInstaller with pytesseract in hiddenimports."
+                ) from None
+            # dev mode: pytesseract may not be installed, that's acceptable
 
     if paths.tessdata_prefix is not None:
         os.environ["TESSDATA_PREFIX"] = str(paths.tessdata_prefix)

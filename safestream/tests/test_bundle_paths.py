@@ -1,7 +1,8 @@
 # tests/test_bundle_paths.py
+import os
 import sys
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 
 def test_dev_mode_config_dir():
@@ -23,6 +24,26 @@ def test_dev_mode_log_dir():
     assert paths.log_dir == Path(__file__).parent.parent / "logs"
 
 
+def test_dev_mode_tesseract_cmd_is_none():
+    """In dev mode, tesseract_cmd must be None (use system PATH)."""
+    with patch.object(sys, 'frozen', False, create=True):
+        from core import bundle_paths
+        import importlib
+        importlib.reload(bundle_paths)
+        paths = bundle_paths.get_paths()
+    assert paths.tesseract_cmd is None
+
+
+def test_dev_mode_tessdata_prefix_is_none():
+    """In dev mode, tessdata_prefix must be None (use system default)."""
+    with patch.object(sys, 'frozen', False, create=True):
+        from core import bundle_paths
+        import importlib
+        importlib.reload(bundle_paths)
+        paths = bundle_paths.get_paths()
+    assert paths.tessdata_prefix is None
+
+
 def test_bundle_mode_config_dir():
     """In bundle mode (frozen), config_dir is ~/Library/Application Support/SafeStream."""
     fake_meipass = "/tmp/fake_bundle"
@@ -32,8 +53,8 @@ def test_bundle_mode_config_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-    expected = Path.home() / "Library" / "Application Support" / "SafeStream"
-    assert paths.config_dir == expected
+        expected = Path.home() / "Library" / "Application Support" / "SafeStream"
+        assert paths.config_dir == expected
 
 
 def test_bundle_mode_tessdata_prefix():
@@ -44,7 +65,7 @@ def test_bundle_mode_tessdata_prefix():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-    assert paths.tessdata_prefix == Path("/tmp/fake_bundle/tessdata")
+        assert paths.tessdata_prefix == Path("/tmp/fake_bundle/tessdata")
 
 
 def test_bundle_mode_tesseract_cmd():
@@ -55,4 +76,65 @@ def test_bundle_mode_tesseract_cmd():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-    assert paths.tesseract_cmd == Path("/tmp/fake_bundle/bin/tesseract")
+        assert paths.tesseract_cmd == Path("/tmp/fake_bundle/bin/tesseract")
+
+
+def test_setup_dev_mode_creates_log_dir(tmp_path):
+    """setup() in dev mode must create the log_dir directory."""
+    import importlib
+    from core import bundle_paths
+
+    fake_log_dir = tmp_path / "logs"
+    fake_config_dir = tmp_path
+
+    fake_paths = bundle_paths.AppPaths(
+        config_dir=fake_config_dir,
+        log_dir=fake_log_dir,
+        data_dir=tmp_path / "data",
+        tesseract_cmd=None,
+        tessdata_prefix=None,
+    )
+
+    with patch.object(sys, 'frozen', False, create=True):
+        importlib.reload(bundle_paths)
+        with patch.object(bundle_paths, 'get_paths', return_value=fake_paths):
+            bundle_paths.setup()
+
+    assert fake_log_dir.exists()
+
+
+def test_setup_bundle_mode_sets_tessdata_prefix(tmp_path):
+    """setup() in bundle mode must set os.environ['TESSDATA_PREFIX']."""
+    import importlib
+    from core import bundle_paths
+
+    fake_tessdata = tmp_path / "tessdata"
+    fake_tessdata.mkdir()
+
+    fake_paths = bundle_paths.AppPaths(
+        config_dir=tmp_path / "config",
+        log_dir=tmp_path / "logs",
+        data_dir=tmp_path / "data",
+        tesseract_cmd=tmp_path / "bin" / "tesseract",
+        tessdata_prefix=fake_tessdata,
+    )
+
+    mock_pytesseract = MagicMock()
+    mock_pytesseract.pytesseract = MagicMock()
+
+    original_tessdata = os.environ.pop("TESSDATA_PREFIX", None)
+    try:
+        with patch.object(sys, 'frozen', True, create=True), \
+             patch.object(sys, '_MEIPASS', str(tmp_path), create=True):
+            importlib.reload(bundle_paths)
+            with patch.object(bundle_paths, 'get_paths', return_value=fake_paths), \
+                 patch.dict('sys.modules', {'pytesseract': mock_pytesseract}):
+                bundle_paths.setup()
+
+        assert os.environ.get("TESSDATA_PREFIX") == str(fake_tessdata)
+    finally:
+        # Restore original env state
+        if original_tessdata is not None:
+            os.environ["TESSDATA_PREFIX"] = original_tessdata
+        else:
+            os.environ.pop("TESSDATA_PREFIX", None)
