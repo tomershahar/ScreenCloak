@@ -34,7 +34,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--config",
         metavar="FILE",
-        default="config.yaml",
+        default=None,
         help="Path to config file (default: config.yaml)",
     )
     parser.add_argument(
@@ -344,7 +344,7 @@ def main() -> int:
     args = parser.parse_args()
 
     # Resolve config path: use CLI override if provided, otherwise use bundle-resolved path
-    if args.config == "config.yaml":
+    if args.config is None:
         args.config = str(_PATHS.config_dir / "config.yaml")
 
     app = SafeStream(args)
