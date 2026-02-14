@@ -69,6 +69,8 @@ def test_bundle_mode_tessdata_prefix():
 
 
 def test_bundle_mode_tesseract_cmd():
+    # bundle_paths no longer bundles the Tesseract binary (it conflicts with cv2's
+    # libtesseract). Instead it points to the system Homebrew binary if present, or None.
     fake_meipass = "/tmp/fake_bundle"
     with patch.object(sys, 'frozen', True, create=True), \
          patch.object(sys, '_MEIPASS', fake_meipass, create=True):
@@ -76,7 +78,9 @@ def test_bundle_mode_tesseract_cmd():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        assert paths.tesseract_cmd == Path("/tmp/fake_bundle/bin/tesseract")
+    system_tess = Path("/opt/homebrew/bin/tesseract")
+    expected = system_tess if system_tess.exists() else None
+    assert paths.tesseract_cmd == expected
 
 
 def test_setup_dev_mode_creates_log_dir(tmp_path):
