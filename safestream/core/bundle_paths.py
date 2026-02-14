@@ -23,13 +23,18 @@ class AppPaths:
 def get_paths() -> AppPaths:
     """Return resolved paths for the current runtime environment."""
     if getattr(sys, "frozen", False):
-        # Running inside PyInstaller .app bundle
+        # Running inside PyInstaller .app bundle.
+        # We do NOT bundle the Tesseract binary because it conflicts with cv2's
+        # bundled libtesseract.5.dylib (SIGABRT on symbol mismatch).
+        # Instead point pytesseract at the system Homebrew Tesseract.
         base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
+        # Use bundled tessdata but system Tesseract binary
+        system_tess = Path("/opt/homebrew/bin/tesseract")
         return AppPaths(
             config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
             log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
             data_dir=base / "data",
-            tesseract_cmd=base / "bin" / "tesseract",
+            tesseract_cmd=system_tess if system_tess.exists() else None,
             tessdata_prefix=base / "tessdata",
         )
     else:

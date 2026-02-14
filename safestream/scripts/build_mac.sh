@@ -27,7 +27,13 @@ rm -rf build/ dist/
 
 # ── 2. PyInstaller ───────────────────────────────────────────────────────────
 echo "→ Running PyInstaller..."
-pyinstaller SafeStream.spec --clean --noconfirm
+# Resolve pyinstaller: prefer system PATH, fall back to python3 -m PyInstaller
+if command -v pyinstaller &>/dev/null; then
+    PYINSTALLER_CMD="pyinstaller"
+else
+    PYINSTALLER_CMD="python3 -m PyInstaller"
+fi
+$PYINSTALLER_CMD SafeStream.spec --clean --noconfirm
 echo "✓ dist/${APP_NAME}.app created"
 
 # ── 3. Code signing ──────────────────────────────────────────────────────────

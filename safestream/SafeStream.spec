@@ -12,7 +12,9 @@ a = Analysis(
     ["main.py"],
     pathex=["."],
     binaries=[
-        (TESS_BIN, "bin"),
+        # NOTE: Do NOT bundle the Tesseract binary — it conflicts with cv2's
+        # bundled libtesseract.5.dylib at runtime (SIGABRT on symbol mismatch).
+        # bundle_paths.py points pytesseract to the system Homebrew Tesseract instead.
     ],
     datas=[
         (TESS_DATA, "tessdata"),
