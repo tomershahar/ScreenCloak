@@ -197,7 +197,11 @@ python main.py --no-tray
 
 ## System Tray
 
-When ScreenCloak is running, a small icon appears in your menu bar (macOS) or system tray (Windows):
+When ScreenCloak is running, a small circle icon appears in your menu bar (macOS) or system tray (Windows).
+
+> **macOS tip:** If you don't see the icon, it may be hidden behind other menu bar icons. Hold **⌘ Command** and drag other icons to the left to make room, or use an app like [Bartender](https://www.macbartender.com/) to manage overflow icons.
+
+
 
 | Icon colour | Meaning | OBS action |
 |---|---|---|
