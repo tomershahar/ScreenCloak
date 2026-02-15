@@ -8,6 +8,7 @@ import argparse
 import logging
 import signal
 import sys
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -410,9 +411,18 @@ def main() -> int:
             traceback.print_exc()
         return 1
 
-    exit_code = app.run()
+    if app._tray is not None:
+        # macOS requires pystray on the main thread — run the scan loop in a
+        # background thread and give the main thread to the tray event loop.
+        scan_thread = threading.Thread(target=app.run, daemon=True, name="scan")
+        scan_thread.start()
+        app._tray.run_blocking()   # blocks until user clicks Quit
+        scan_thread.join(timeout=5)
+    else:
+        app.run()
+
     app.shutdown()
-    return exit_code
+    return 0
 
 
 if __name__ == "__main__":

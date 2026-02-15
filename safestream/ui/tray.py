@@ -48,7 +48,6 @@ class SystemTray:
         self._paused: bool = False
         self._pause_event: threading.Event = threading.Event()
         self._icon: Any = None
-        self._thread: threading.Thread | None = None
 
     @property
     def pause_event(self) -> threading.Event:
@@ -74,7 +73,12 @@ class SystemTray:
                 pass
 
     def start(self) -> None:
-        """Start the tray icon in a daemon background thread. No-op if pystray not available."""
+        """Build the tray icon. No-op if pystray not available.
+
+        On macOS, pystray must run on the main thread — call run_blocking() from
+        main() after moving the scan loop to a background thread. On Windows,
+        run_blocking() also works but can also be called from a thread.
+        """
         if not _PYSTRAY_AVAILABLE:
             return
 
@@ -99,8 +103,15 @@ class SystemTray:
             title="ScreenCloak",
             menu=menu,
         )
-        self._thread = threading.Thread(target=self._icon.run, daemon=True, name="tray")
-        self._thread.start()
+
+    def run_blocking(self) -> None:
+        """Block the calling thread running the tray event loop.
+
+        Must be called from the main thread on macOS. Returns when the tray
+        is stopped (e.g. user clicks Quit).
+        """
+        if self._icon is not None:
+            self._icon.run()
 
     def stop(self) -> None:
         """Remove the tray icon."""
