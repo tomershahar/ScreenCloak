@@ -1,6 +1,6 @@
 # Build artifacts — never commit
-safestream/dist/
-safestream/build/
+screencloak/dist/
+screencloak/build/
 *.egg-info/
 
 # Python
@@ -17,7 +17,7 @@ __pycache__/
 config.local.yaml
 
 # Logs
-safestream/logs/
+screencloak/logs/
 *.log
 
 # macOS

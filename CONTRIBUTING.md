@@ -100,7 +100,7 @@ Include both benchmark outputs in your PR description.
 ## Running Tests
 
 ```bash
-cd safestream
+cd screencloak
 python3 -m pytest tests/ --ignore=tests/benchmark.py -q
 ```
 
