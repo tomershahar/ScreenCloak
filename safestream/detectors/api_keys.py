@@ -26,6 +26,15 @@ class APIKeysDetector(BaseDetector):
             self._patterns = self._load_patterns()
 
     def detect(self, ocr_results: list[OCRResult]) -> list[DetectionResult]:
+        """
+        Detect API keys and tokens in OCR results.
+
+        Args:
+            ocr_results: List of OCR results from text detection.
+
+        Returns:
+            List of DetectionResult, one per matched service.
+        """
         if not self.enabled or not ocr_results:
             return []
 
@@ -48,6 +57,8 @@ class APIKeysDetector(BaseDetector):
 
                 matched_text = match.group()
                 bbox = self._bbox_for_match(matched_text, ocr_results)
+                if bbox is None:
+                    bbox = ocr_results[0].bounding_box  # best-effort fallback
 
                 detections.append(DetectionResult(
                     type="api_key",
@@ -63,15 +74,26 @@ class APIKeysDetector(BaseDetector):
 
     def _bbox_for_match(
         self, matched_text: str, ocr_results: list[OCRResult]
-    ) -> tuple[int, int, int, int]:
-        """Return bounding box of the OCR token containing the match prefix."""
+    ) -> tuple[int, int, int, int] | None:
+        """
+        Return bounding box of the first OCR token containing the match prefix.
+        Returns None if no token contains the prefix (e.g. match spans token boundary).
+        """
         prefix = matched_text[:8]
+        if not prefix:
+            return None
         for result in ocr_results:
             if prefix in result.text:
                 return result.bounding_box
-        return ocr_results[0].bounding_box
+        return None
 
     def _load_patterns(self) -> dict[str, list[dict[str, Any]]]:
+        """
+        Load API key patterns from data/api_patterns.json.
+
+        Returns:
+            Dict mapping service name to list of pattern dicts (pattern, confidence, description).
+        """
         patterns_path = Path(__file__).parent.parent / "data" / "api_patterns.json"
         if not patterns_path.exists():
             return {}
@@ -80,6 +102,12 @@ class APIKeysDetector(BaseDetector):
         return {k: v for k, v in data.items() if not k.startswith("_")}
 
     def get_supported_services(self) -> list[str]:
+        """
+        Return list of supported API key service names.
+
+        Returns:
+            List of service names, e.g. ["AWS", "GitHub", "Stripe", ...]
+        """
         return list(self._patterns.keys())
 
 
