@@ -1,10 +1,10 @@
     
 
-# SafeStream
+# ScreenCloak
 
 **Description: What is it?**
 
-SafeStream is an OBS Studio plugin that automatically detects and redacts sensitive information from a streamer's screen in real time — before it reaches viewers. It sits in the OBS video pipeline, runs OCR on frames, and applies a blur overlay when it identifies sensitive data like crypto seed phrases, wallet addresses, credit card numbers, API keys, or user-defined personal strings (name, address, phone number, email).
+ScreenCloak is an OBS Studio plugin that automatically detects and redacts sensitive information from a streamer's screen in real time — before it reaches viewers. It sits in the OBS video pipeline, runs OCR on frames, and applies a blur overlay when it identifies sensitive data like crypto seed phrases, wallet addresses, credit card numbers, API keys, or user-defined personal strings (name, address, phone number, email).
 
 **Problem: What problem is this solving?**
 
@@ -29,7 +29,7 @@ V1 success metrics (first 6 months post-launch):
 
 * **Installs:** 5,000+ free installs of the OBS plugin
 * **Detections:** Measurable count of successful redactions (leaks prevented), reported via opt-in anonymous telemetry
-* **Word of mouth:** At least 3-5 unsolicited streamer testimonials, clips, or social media mentions of SafeStream catching a potential leak
+* **Word of mouth:** At least 3-5 unsolicited streamer testimonials, clips, or social media mentions of ScreenCloak catching a potential leak
 
 Longer-term (12 months):
 
@@ -39,13 +39,13 @@ Longer-term (12 months):
 
 **Audience: Who are we building for?**
 
-Primary: Live streamers who share their screen during broadcasts — especially those who also handle financial information (crypto traders, developers showing code, productivity streamers). Platform-agnostic (Twitch, YouTube, Kick, etc.) since SafeStream operates at the OBS level.
+Primary: Live streamers who share their screen during broadcasts — especially those who also handle financial information (crypto traders, developers showing code, productivity streamers). Platform-agnostic (Twitch, YouTube, Kick, etc.) since ScreenCloak operates at the OBS level.
 
 Secondary: Anyone who screen-shares professionally — developers on Zoom/Teams calls, educators doing live demos, corporate presenters. This is the larger market but not the launch audience.
 
 **What: Roughly, what does this look like in the product?**
 
-SafeStream is an OBS Studio plugin. Once installed, it appears as a video filter that the streamer adds to their scene.
+ScreenCloak is an OBS Studio plugin. Once installed, it appears as a video filter that the streamer adds to their scene.
 
 **V1 feature set:**
 

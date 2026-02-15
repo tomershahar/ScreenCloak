@@ -1,7 +1,7 @@
-# SafeStream Python Prototype - Implementation Plan
+# ScreenCloak Python Prototype - Implementation Plan
 
 ## Goal Description
-Build a functional standalone Python prototype for "SafeStream" that captures screen content, runs OCR to detect sensitive information (seed phrases, credit cards, etc.), and integrates with OBS via WebSocket to redact or hide content.
+Build a functional standalone Python prototype for "ScreenCloak" that captures screen content, runs OCR to detect sensitive information (seed phrases, credit cards, etc.), and integrates with OBS via WebSocket to redact or hide content.
 
 ## User Review Required
 > [!IMPORTANT]
@@ -28,7 +28,7 @@ Build a functional standalone Python prototype for "SafeStream" that captures sc
 We will create a modular Python project:
 
 ```text
-safestream/
+screencloak/
 ├── core/
 │   ├── capture.py       # Screen capture (mss)
 │   ├── ocr.py           # PaddleOCR wrapper
@@ -42,23 +42,23 @@ safestream/
 ```
 
 ### [SAFE_STREAM]
-#### [NEW] [main.py](file:///Users/tomershahar/SafeSense/safestream/main.py)
+#### [NEW] [main.py](file:///Users/tomershahar/SafeSense/screencloak/main.py)
 The entry point. Runs the loop: Capture -> OCR -> Detect -> Act.
 
-#### [NEW] [core/capture.py](file:///Users/tomershahar/SafeSense/safestream/core/capture.py)
+#### [NEW] [core/capture.py](file:///Users/tomershahar/SafeSense/screencloak/core/capture.py)
 Handles capturing the screen or specific monitor. Includes a 'MockCapture' class for testing with static images.
 
-#### [NEW] [core/ocr.py](file:///Users/tomershahar/SafeSense/safestream/core/ocr.py)
+#### [NEW] [core/ocr.py](file:///Users/tomershahar/SafeSense/screencloak/core/ocr.py)
 Wraps PaddleOCR (or Tesseract as fallback/lightweight option). Optimizes for speed (e.g., restricting region of interest).
 
-#### [NEW] [core/detector.py](file:///Users/tomershahar/SafeSense/safestream/core/detector.py)
+#### [NEW] [core/detector.py](file:///Users/tomershahar/SafeSense/screencloak/core/detector.py)
 The brain.
 *   Loads BIP-39 wordlist.
 *   Implements Luhn algorithm for CCs.
 *   Regex for crypto addresses.
 *   Returns bounding boxes of sensitive data.
 
-#### [NEW] [core/obs_client.py](file:///Users/tomershahar/SafeSense/safestream/core/obs_client.py)
+#### [NEW] [core/obs_client.py](file:///Users/tomershahar/SafeSense/screencloak/core/obs_client.py)
 Connects to OBS. Exposes methods like `trigger_privacy_mode()` (e.g., switch to "BRB" scene or toggle a blur source).
 
 ## Verification Plan

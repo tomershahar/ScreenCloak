@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Package SafeStream as a signed, notarized macOS `.app` distributed via a `.dmg` drag-to-install.
+**Goal:** Package ScreenCloak as a signed, notarized macOS `.app` distributed via a `.dmg` drag-to-install.
 
-**Architecture:** PyInstaller bundles the Python interpreter + all deps + Tesseract binary into `SafeStream.app`. A new `core/bundle_paths.py` module detects frozen mode and redirects pytesseract and config/log paths to the correct locations. `scripts/build_mac.sh` runs the full pipeline: build → sign → dmg → notarize → staple.
+**Architecture:** PyInstaller bundles the Python interpreter + all deps + Tesseract binary into `ScreenCloak.app`. A new `core/bundle_paths.py` module detects frozen mode and redirects pytesseract and config/log paths to the correct locations. `scripts/build_mac.sh` runs the full pipeline: build → sign → dmg → notarize → staple.
 
 **Tech Stack:** PyInstaller, create-dmg, codesign, xcrun notarytool/stapler
 
@@ -12,7 +12,7 @@
 
 ## Working directory
 
-All commands run from `/Users/tomershahar/SafeSense/safestream/` unless stated otherwise.
+All commands run from `/Users/tomershahar/SafeSense/screencloak/` unless stated otherwise.
 
 ---
 
@@ -32,7 +32,7 @@ from unittest.mock import patch
 
 
 def test_dev_mode_config_dir():
-    """In dev mode (not frozen), config_dir is the repo root (safestream/)."""
+    """In dev mode (not frozen), config_dir is the repo root (screencloak/)."""
     with patch.object(sys, 'frozen', False, create=True):
         from core import bundle_paths
         import importlib
@@ -51,7 +51,7 @@ def test_dev_mode_log_dir():
 
 
 def test_bundle_mode_config_dir():
-    """In bundle mode (frozen), config_dir is ~/Library/Application Support/SafeStream."""
+    """In bundle mode (frozen), config_dir is ~/Library/Application Support/ScreenCloak."""
     fake_meipass = "/tmp/fake_bundle"
     with patch.object(sys, 'frozen', True, create=True), \
          patch.object(sys, '_MEIPASS', fake_meipass, create=True):
@@ -59,7 +59,7 @@ def test_bundle_mode_config_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-    expected = Path.home() / "Library" / "Application Support" / "SafeStream"
+    expected = Path.home() / "Library" / "Application Support" / "ScreenCloak"
     assert paths.config_dir == expected
 
 
@@ -123,8 +123,8 @@ def get_paths() -> AppPaths:
         # Running inside PyInstaller .app bundle
         base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
         return AppPaths(
-            config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
-            log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
+            config_dir=Path.home() / "Library" / "Application Support" / "ScreenCloak",
+            log_dir=Path.home() / "Library" / "Logs" / "ScreenCloak",
             data_dir=base / "data",
             tesseract_cmd=base / "bin" / "tesseract",
             tessdata_prefix=base / "tessdata",
@@ -195,7 +195,7 @@ git commit -m "feat: add bundle_paths module for PyInstaller path resolution"
 ### Task 2: Patch `main.py` to call `bundle_paths.setup()` first
 
 **Files:**
-- Modify: `main.py` (top of file, before other safestream imports)
+- Modify: `main.py` (top of file, before other screencloak imports)
 
 **Step 1: Find the import block in main.py**
 
@@ -203,7 +203,7 @@ The top of `main.py` has argument parsing before heavy imports. We need to call 
 
 **Step 2: Add the setup call**
 
-In `main.py`, find the section where components are initialized (after arg parsing, before the main loop). Add at the very top of the initialization function, before any safestream core imports:
+In `main.py`, find the section where components are initialized (after arg parsing, before the main loop). Add at the very top of the initialization function, before any screencloak core imports:
 
 ```python
 # At the top of main.py, after the argparse section:
@@ -240,10 +240,10 @@ git commit -m "feat: call bundle_paths.setup() at startup for frozen app support
 
 ---
 
-### Task 3: `SafeStream.spec` — PyInstaller configuration
+### Task 3: `ScreenCloak.spec` — PyInstaller configuration
 
 **Files:**
-- Create: `SafeStream.spec` (in `safestream/` root)
+- Create: `ScreenCloak.spec` (in `screencloak/` root)
 
 **Step 1: Install PyInstaller**
 
@@ -256,7 +256,7 @@ Expected: `6.x.x`
 **Step 2: Create the spec file**
 
 ```python
-# SafeStream.spec
+# ScreenCloak.spec
 # -*- mode: python ; coding: utf-8 -*-
 import sys
 from pathlib import Path
@@ -326,7 +326,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="SafeStream",
+    name="ScreenCloak",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -346,20 +346,20 @@ coll = COLLECT(
     strip=False,
     upx=False,
     upx_exclude=[],
-    name="SafeStream",
+    name="ScreenCloak",
 )
 
 app = BUNDLE(
     coll,
-    name="SafeStream.app",
+    name="ScreenCloak.app",
     icon=None,             # Add icon.icns here later
-    bundle_identifier="com.safestream.app",
+    bundle_identifier="com.screencloak.app",
     version="1.0.0",
     info_plist={
         "NSPrincipalClass": "NSApplication",
         "NSHighResolutionCapable": True,
         "NSScreenCaptureUsageDescription":
-            "SafeStream captures your screen to detect sensitive information before it reaches viewers.",
+            "ScreenCloak captures your screen to detect sensitive information before it reaches viewers.",
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1.0.0",
         "LSUIElement": True,   # Hide from Dock (background app)
@@ -391,23 +391,23 @@ Create `scripts/entitlements.plist`:
 **Step 4: Do a test build (no signing yet)**
 
 ```bash
-pyinstaller SafeStream.spec --clean
+pyinstaller ScreenCloak.spec --clean
 ```
-Expected: `dist/SafeStream.app` created, no errors.
+Expected: `dist/ScreenCloak.app` created, no errors.
 
 If you see `ModuleNotFoundError` for any import, add it to `hiddenimports` in the spec.
 
 **Step 5: Smoke test the bundle**
 
 ```bash
-dist/SafeStream.app/Contents/MacOS/SafeStream --help
+dist/ScreenCloak.app/Contents/MacOS/ScreenCloak --help
 ```
-Expected: SafeStream help text printed, no import errors.
+Expected: ScreenCloak help text printed, no import errors.
 
 **Step 6: Commit**
 
 ```bash
-git add SafeStream.spec scripts/entitlements.plist
+git add ScreenCloak.spec scripts/entitlements.plist
 git commit -m "feat: add PyInstaller spec and entitlements for macOS .app bundle"
 ```
 
@@ -428,7 +428,7 @@ brew install create-dmg
 
 ```bash
 #!/bin/bash
-# scripts/build_mac.sh — Build, sign, package, and notarize SafeStream.app
+# scripts/build_mac.sh — Build, sign, package, and notarize ScreenCloak.app
 #
 # Required environment variables for signing/notarizing:
 #   APPLE_ID           — your Apple ID email
@@ -443,10 +443,10 @@ brew install create-dmg
 set -euo pipefail
 
 VERSION="1.0.0"
-APP_NAME="SafeStream"
+APP_NAME="ScreenCloak"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 
-echo "=== SafeStream macOS Build ==="
+echo "=== ScreenCloak macOS Build ==="
 echo "Version: $VERSION"
 echo ""
 
@@ -456,7 +456,7 @@ rm -rf build/ dist/
 
 # ── 2. PyInstaller ───────────────────────────────────────────────────────────
 echo "→ Running PyInstaller..."
-pyinstaller SafeStream.spec --clean --noconfirm
+pyinstaller ScreenCloak.spec --clean --noconfirm
 echo "✓ dist/${APP_NAME}.app created"
 
 # ── 3. Code signing ──────────────────────────────────────────────────────────
@@ -532,9 +532,9 @@ SKIP_NOTARIZE=1 ./scripts/build_mac.sh
 ```
 Expected:
 ```
-✓ dist/SafeStream.app created
+✓ dist/ScreenCloak.app created
 ⚠ SIGN_IDENTITY not set — skipping code signing
-✓ dist/SafeStream-1.0.0.dmg created
+✓ dist/ScreenCloak-1.0.0.dmg created
 ⚠ Skipping notarization
 === Build complete ===
 ```
@@ -542,23 +542,23 @@ Expected:
 **Step 2: Mount the DMG and install**
 
 ```bash
-open dist/SafeStream-1.0.0.dmg
-# Drag SafeStream.app to Applications in the DMG window
+open dist/ScreenCloak-1.0.0.dmg
+# Drag ScreenCloak.app to Applications in the DMG window
 ```
 
 **Step 3: Launch from Applications**
 
 ```bash
-open /Applications/SafeStream.app
+open /Applications/ScreenCloak.app
 ```
 
-Check `~/Library/Logs/SafeStream/` for log output. Expected: SafeStream starts, config copied to `~/Library/Application Support/SafeStream/config.yaml`.
+Check `~/Library/Logs/ScreenCloak/` for log output. Expected: ScreenCloak starts, config copied to `~/Library/Application Support/ScreenCloak/config.yaml`.
 
 **Step 4: Smoke test — run with mock image**
 
 ```bash
-/Applications/SafeStream.app/Contents/MacOS/SafeStream \
-  --mock /Applications/SafeStream.app/Contents/MacOS/data/test_images/seed_phrase_12word.png \
+/Applications/ScreenCloak.app/Contents/MacOS/ScreenCloak \
+  --mock /Applications/ScreenCloak.app/Contents/MacOS/data/test_images/seed_phrase_12word.png \
   --once --no-obs
 ```
 Expected: seed_phrase detection logged, clean exit.
@@ -598,9 +598,9 @@ Expected: all steps complete including notarization and stapling.
 **Step 3: Verify notarization**
 
 ```bash
-spctl --assess --verbose dist/SafeStream.app
+spctl --assess --verbose dist/ScreenCloak.app
 ```
-Expected: `dist/SafeStream.app: accepted` — Gatekeeper approves it.
+Expected: `dist/ScreenCloak.app: accepted` — Gatekeeper approves it.
 
 **Step 4: Test on a clean Mac** (or via a new user account)
 - Copy the `.dmg` to another machine or user
@@ -613,12 +613,12 @@ Expected: `dist/SafeStream.app: accepted` — Gatekeeper approves it.
 
 | Problem | Fix |
 |---------|-----|
-| `ModuleNotFoundError` in bundle | Add the module to `hiddenimports` in `SafeStream.spec` |
+| `ModuleNotFoundError` in bundle | Add the module to `hiddenimports` in `ScreenCloak.spec` |
 | `tesseract not found` in bundle | Verify `/opt/homebrew/bin/tesseract` exists; check spec `binaries` path |
 | `tessdata not found` | Verify `TESSDATA_PREFIX` set correctly in bundle_paths.py |
 | Gatekeeper blocks app | Run `./scripts/build_mac.sh` with signing env vars set |
 | Notarization rejected | Check notarytool log: `xcrun notarytool log <submission-id>` |
-| App crashes on launch | Run from terminal to see stderr: `dist/SafeStream.app/Contents/MacOS/SafeStream` |
+| App crashes on launch | Run from terminal to see stderr: `dist/ScreenCloak.app/Contents/MacOS/ScreenCloak` |
 
 ---
 
@@ -629,6 +629,6 @@ Expected: `dist/SafeStream.app: accepted` — Gatekeeper approves it.
 | Create | `core/bundle_paths.py` |
 | Create | `tests/test_bundle_paths.py` |
 | Modify | `main.py` |
-| Create | `SafeStream.spec` |
+| Create | `ScreenCloak.spec` |
 | Create | `scripts/entitlements.plist` |
 | Create | `scripts/build_mac.sh` |

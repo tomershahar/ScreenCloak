@@ -1,4 +1,4 @@
-# SafeStream Tech Lead Review
+# ScreenCloak Tech Lead Review
 
 **Date:** February 13, 2026
 **Reviewer:** Gemini (Tech Lead)

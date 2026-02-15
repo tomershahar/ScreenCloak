@@ -1,4 +1,4 @@
-# SafeStream - Project Building Plan
+# ScreenCloak - Project Building Plan
 
 ## Overview
 
@@ -30,7 +30,7 @@ This plan breaks M1 (Core Detection Engine) into small, logical tasks that can b
 
 - [ ] Create directory structure:
   ```
-  safestream/
+  screencloak/
   ├── core/
   ├── detectors/
   ├── data/
@@ -47,7 +47,7 @@ This plan breaks M1 (Core Detection Engine) into small, logical tasks that can b
 
 **Verification:**
 ```bash
-tree safestream/  # Should show full directory structure
+tree screencloak/  # Should show full directory structure
 ```
 
 ---
@@ -84,7 +84,7 @@ tree safestream/  # Should show full directory structure
 - [ ] Create `pyproject.toml` for tooling config:
   ```toml
   [project]
-  name = "safestream"
+  name = "screencloak"
   version = "0.1.0"
   description = "Real-time sensitive data detection for OBS streams"
 
@@ -102,7 +102,7 @@ tree safestream/  # Should show full directory structure
   testpaths = ["tests"]
   python_files = ["test_*.py"]
   python_functions = ["test_*"]
-  addopts = "--cov=safestream --cov-report=term-missing"
+  addopts = "--cov=screencloak --cov-report=term-missing"
   ```
 
 **Verification:**
@@ -129,7 +129,7 @@ cat pyproject.toml    # Should show tooling config
 **Verification:**
 ```bash
 # Create test script
-python -c "from safestream.core.config_manager import ConfigManager; config = ConfigManager.load(); print(config)"
+python -c "from screencloak.core.config_manager import ConfigManager; config = ConfigManager.load(); print(config)"
 ```
 
 ---
@@ -148,7 +148,7 @@ python -c "from safestream.core.config_manager import ConfigManager; config = Co
 
 **Verification:**
 ```python
-from safestream.core.logger import log_detection
+from screencloak.core.logger import log_detection
 log_detection({"type": "test", "text": "sensitive data"}, sanitized=True)
 # Check logs/detections.log contains [REDACTED]
 ```
@@ -188,7 +188,7 @@ log_detection({"type": "test", "text": "sensitive data"}, sanitized=True)
 
 **Verification:**
 ```python
-from safestream.detectors.base import DetectionResult, OCRResult, BaseDetector
+from screencloak.detectors.base import DetectionResult, OCRResult, BaseDetector
 # Should import without errors
 ```
 
@@ -235,8 +235,8 @@ tail -5 data/bip39_wordlist.txt  # Should show: zone, zoo
 **Verification:**
 ```python
 # Create test in tests/test_seed_phrase.py
-from safestream.detectors.seed_phrase import SeedPhraseDetector
-from safestream.detectors.base import OCRResult
+from screencloak.detectors.seed_phrase import SeedPhraseDetector
+from screencloak.detectors.base import OCRResult
 
 # Mock 12-word seed phrase
 words = "abandon ability able about above absent absorb abstract absurd abuse access accident"
@@ -278,7 +278,7 @@ assert detections[0].confidence > 0.9
 
 **Verification:**
 ```python
-from safestream.detectors.credit_card import CreditCardDetector, luhn_check
+from screencloak.detectors.credit_card import CreditCardDetector, luhn_check
 
 # Valid test card (passes Luhn)
 assert luhn_check("4532148803436467") == True
@@ -317,7 +317,7 @@ assert detections[0].type == "credit_card"
 
 **Verification:**
 ```python
-from safestream.detectors.crypto_address import CryptoAddressDetector
+from screencloak.detectors.crypto_address import CryptoAddressDetector
 
 # Test ETH address
 ocr_results = [OCRResult(
@@ -348,7 +348,7 @@ assert detections[0].type == "crypto_address"
 
 **Verification:**
 ```python
-from safestream.detectors.personal_strings import PersonalStringsDetector
+from screencloak.detectors.personal_strings import PersonalStringsDetector
 
 # Add to config: personal_strings = ["John Doe", "john@email.com"]
 ocr_results = [OCRResult(text="My name is John Doe", bounding_box=(10, 10, 200, 30), confidence=0.9)]
@@ -382,7 +382,7 @@ assert len(detections) >= 1  # Should detect "John Doe"
 
 **Verification:**
 ```python
-from safestream.detectors.api_keys import APIKeysDetector
+from screencloak.detectors.api_keys import APIKeysDetector
 detector = APIKeysDetector(config)
 assert detector.detect([]) == []  # Stub returns empty
 ```
@@ -412,8 +412,8 @@ assert detector.detect([]) == []  # Stub returns empty
 
 **Verification:**
 ```python
-from safestream.core.detector import DetectorPipeline
-from safestream.detectors.base import OCRResult
+from screencloak.core.detector import DetectorPipeline
+from screencloak.detectors.base import OCRResult
 
 # Mock OCR results with seed phrase
 ocr_results = [...]  # 12 BIP-39 words
@@ -445,21 +445,21 @@ assert all(d.action in ["blur", "warn", "ignore"] for d in detections)
 
 **Verification:**
 ```python
-from safestream.core.ocr_engine import OCREngineFactory
+from screencloak.core.ocr_engine import OCREngineFactory
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 # Create test image with text
 img = Image.new('RGB', (400, 100), color='white')
 draw = ImageDraw.Draw(img)
-draw.text((10, 10), "Hello SafeStream", fill='black')
+draw.text((10, 10), "Hello ScreenCloak", fill='black')
 img_array = np.array(img)
 
 engine = OCREngineFactory.create(config)
 results = engine.detect_text(img_array)
 
 assert len(results) > 0
-assert any("Hello" in r.text or "SafeStream" in r.text for r in results)
+assert any("Hello" in r.text or "ScreenCloak" in r.text for r in results)
 ```
 
 ---
@@ -493,7 +493,7 @@ Tesseract was designed for black text on white paper. It fails on dark mode (whi
 
 **Verification:**
 ```python
-from safestream.core.ocr_engine import PaddleOCREngine
+from screencloak.core.ocr_engine import PaddleOCREngine
 import torch
 
 # Check MPS available
@@ -537,7 +537,7 @@ print(f"OCR found {len(results)} text regions")
 
 **Verification:**
 ```python
-from safestream.core.capture import ScreenCapture
+from screencloak.core.capture import ScreenCapture
 import cv2
 
 capturer = ScreenCapture(config)
@@ -567,7 +567,7 @@ cv2.imwrite("test_capture.png", frame)  # Save to verify
 
 **Verification:**
 ```python
-from safestream.core.frame_diff import FrameDiffer
+from screencloak.core.frame_diff import FrameDiffer
 import numpy as np
 
 differ = FrameDiffer()
@@ -615,13 +615,13 @@ Python OCR cannot react faster than OBS encodes frames. The solution is OBS's bu
 3. Set delay to 2-5 seconds
 4. **Result:**
    - Streamer sees real-time (0 delay)
-   - SafeStream detects sensitive data in real-time (200-500ms)
+   - ScreenCloak detects sensitive data in real-time (200-500ms)
    - Viewers see stream delayed by 5 seconds
-   - SafeStream switches scene before sensitive frame reaches viewers
+   - ScreenCloak switches scene before sensitive frame reaches viewers
    - **Secret never leaves the encoder!**
 
 **Why This Works:**
-- Detection at T+0ms: SafeStream sees seed phrase
+- Detection at T+0ms: ScreenCloak sees seed phrase
 - Scene switch at T+500ms: OBS switches to "BRB" screen
 - Stream broadcast at T+5000ms: Viewers see delayed safe stream
 - **Sensitive data is redacted before it reaches viewers**
@@ -630,8 +630,8 @@ Python OCR cannot react faster than OBS encodes frames. The solution is OBS's bu
 ```bash
 # Requires OBS running with WebSocket enabled AND Stream Delay configured
 python -c "
-from safestream.core.obs_client import OBSClient
-from safestream.core.config_manager import ConfigManager
+from screencloak.core.obs_client import OBSClient
+from screencloak.core.config_manager import ConfigManager
 
 config = ConfigManager.load()
 client = OBSClient(config)
@@ -820,7 +820,7 @@ python tests/benchmark.py
 - [ ] Create `docs/OBS_SETUP.md` with:
   - How to enable OBS WebSocket
   - How to create "Privacy Mode" scene
-  - How to configure SafeStream for OBS
+  - How to configure ScreenCloak for OBS
   - Screenshots (optional)
 
 **Files to create:**

@@ -1,7 +1,7 @@
-# SafeStream Python Prototype - Implementation Plan V2
+# ScreenCloak Python Prototype - Implementation Plan V2
 
 ## Goal Description
-Build a functional standalone Python prototype for "SafeStream" that captures screen content, runs OCR to detect sensitive information (seed phrases, credit cards, wallet addresses, API keys, personal data), and integrates with OBS via WebSocket to redact or hide content in real-time.
+Build a functional standalone Python prototype for "ScreenCloak" that captures screen content, runs OCR to detect sensitive information (seed phrases, credit cards, wallet addresses, API keys, personal data), and integrates with OBS via WebSocket to redact or hide content in real-time.
 
 **V2 Changes:** Enhanced performance strategy with multi-OCR engine support, improved false positive management, comprehensive security model, and expanded testing framework.
 
@@ -50,7 +50,7 @@ Build a functional standalone Python prototype for "SafeStream" that captures sc
 ### Project Structure
 
 ```text
-safestream/
+screencloak/
 ├── main.py                    # Entry point & main loop
 ├── config.yaml                # User configuration (NEW)
 ├── requirements.txt           # Python dependencies
@@ -160,7 +160,7 @@ performance:
   memory_limit_mb: 2048  # Restart OCR engine if exceeded
 ```
 
-### [main.py](file:///Users/tomershahar/SafeSense/safestream/main.py) - Entry Point
+### [main.py](file:///Users/tomershahar/SafeSense/screencloak/main.py) - Entry Point
 
 **Purpose:** Run the main detection loop: Capture → Frame Diff → OCR → Detect → Act
 
@@ -213,7 +213,7 @@ def main():
 
 ---
 
-### [core/ocr_engine.py](file:///Users/tomershahar/SafeSense/safestream/core/ocr_engine.py) - Multi-Engine OCR Wrapper
+### [core/ocr_engine.py](file:///Users/tomershahar/SafeSense/screencloak/core/ocr_engine.py) - Multi-Engine OCR Wrapper
 
 **Purpose:** Abstract OCR engine selection with auto-detection and fallback.
 
@@ -253,7 +253,7 @@ class OCREngineFactory:
 
 ---
 
-### [core/detector.py](file:///Users/tomershahar/SafeSense/safestream/core/detector.py) - Detection Pipeline
+### [core/detector.py](file:///Users/tomershahar/SafeSense/screencloak/core/detector.py) - Detection Pipeline
 
 **Purpose:** Coordinate all detection modules and score confidence.
 
@@ -309,7 +309,7 @@ class DetectorPipeline:
 
 ---
 
-### [detectors/seed_phrase.py](file:///Users/tomershahar/SafeSense/safestream/detectors/seed_phrase.py) - BIP-39 Detection
+### [detectors/seed_phrase.py](file:///Users/tomershahar/SafeSense/screencloak/detectors/seed_phrase.py) - BIP-39 Detection
 
 **Purpose:** Detect 12 or 24 word seed phrases from BIP-39 wordlist.
 
@@ -356,7 +356,7 @@ def detect(self, ocr_results):
 
 ---
 
-### [detectors/credit_card.py](file:///Users/tomershahar/SafeSense/safestream/detectors/credit_card.py) - Credit Card Detection
+### [detectors/credit_card.py](file:///Users/tomershahar/SafeSense/screencloak/detectors/credit_card.py) - Credit Card Detection
 
 **Purpose:** Detect 16-digit credit card numbers with Luhn validation.
 
@@ -404,7 +404,7 @@ def _luhn_check(self, card_number: str) -> bool:
 
 ---
 
-### [detectors/crypto_address.py](file:///Users/tomershahar/SafeSense/safestream/detectors/crypto_address.py) - Crypto Address Detection
+### [detectors/crypto_address.py](file:///Users/tomershahar/SafeSense/screencloak/detectors/crypto_address.py) - Crypto Address Detection
 
 **Purpose:** Detect Bitcoin, Ethereum, Solana, and other crypto addresses via regex.
 
@@ -425,7 +425,7 @@ PATTERNS = {
 
 ---
 
-### [detectors/personal_strings.py](file:///Users/tomershahar/SafeSense/safestream/detectors/personal_strings.py) - User-Defined String Detection
+### [detectors/personal_strings.py](file:///Users/tomershahar/SafeSense/screencloak/detectors/personal_strings.py) - User-Defined String Detection
 
 **Purpose:** Fuzzy match user-provided personal info (name, email, phone, address).
 
@@ -457,7 +457,7 @@ def detect(self, ocr_results):
 
 ---
 
-### [core/obs_client.py](file:///Users/tomershahar/SafeSense/safestream/core/obs_client.py) - OBS WebSocket Controller
+### [core/obs_client.py](file:///Users/tomershahar/SafeSense/screencloak/core/obs_client.py) - OBS WebSocket Controller
 
 **Purpose:** Connect to OBS and trigger privacy mode (scene switch or source toggle).
 
@@ -501,12 +501,12 @@ class OBSClient:
 1. Create a new scene called "Privacy Mode"
 2. Add a black/blurred background image
 3. Add text: "Sensitive information detected - Be right back!"
-4. In SafeStream config, set `obs.privacy_scene: "Privacy Mode"`
+4. In ScreenCloak config, set `obs.privacy_scene: "Privacy Mode"`
 ```
 
 ---
 
-### [core/frame_diff.py](file:///Users/tomershahar/SafeSense/safestream/core/frame_diff.py) - Frame Differencing
+### [core/frame_diff.py](file:///Users/tomershahar/SafeSense/screencloak/core/frame_diff.py) - Frame Differencing
 
 **Purpose:** Detect changed regions to avoid OCR on static content.
 
@@ -837,7 +837,7 @@ create_test_image(
 - [ ] Demo mode: Pre-recorded video with secrets → automated detection clips
 
 **Success Criteria:**
-- Beta testers can see what SafeStream "sees" via preview UI
+- Beta testers can see what ScreenCloak "sees" via preview UI
 - Demo video is shareable for marketing
 
 ---
@@ -853,8 +853,8 @@ create_test_image(
 - [ ] Telemetry opt-in (anonymous usage stats)
 
 **Success Criteria:**
-- 10+ active testers stream with SafeStream for 2+ weeks
-- 3-5 documented "close calls" (SafeStream caught a real leak)
+- 10+ active testers stream with ScreenCloak for 2+ weeks
+- 3-5 documented "close calls" (ScreenCloak caught a real leak)
 - False positive rate < 10% in real-world usage
 - Collect testimonials & permission to use clips
 
@@ -880,7 +880,7 @@ create_test_image(
 **Goal:** Release free tier publicly.
 
 **Deliverables:**
-- [ ] Landing page (safestream.io or similar)
+- [ ] Landing page (screencloak.io or similar)
 - [ ] Installation instructions (OBS plugin marketplace + manual)
 - [ ] Product Hunt / Hacker News launch
 - [ ] Twitter/Reddit announcement
@@ -919,7 +919,7 @@ create_test_image(
 
 2. **Testimonial Kit** (M3)
    - Provide beta testers with:
-     - Template tweet: "SafeStream just saved me from leaking my [redacted] on stream 🙏"
+     - Template tweet: "ScreenCloak just saved me from leaking my [redacted] on stream 🙏"
      - Instructions to clip the moment via OBS replay buffer
      - Permission form to share their clip
 
