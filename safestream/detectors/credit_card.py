@@ -285,7 +285,11 @@ class CreditCardDetector(BaseDetector):
 
     def _has_cvv_pattern(self, text: str) -> bool:
         """
-        Check if text contains a CVV pattern (3 or 4 digits).
+        Check if text contains a CVV pattern (3 or 4 digits with explicit label).
+
+        Only matches when an explicit CVV/CVC/CV2 label is present.
+        Standalone 3-4 digit numbers are NOT treated as CVV — port numbers,
+        UI values, and other numeric UI elements would cause too many false positives.
 
         Args:
             text: Text to search
@@ -293,17 +297,8 @@ class CreditCardDetector(BaseDetector):
         Returns:
             True if CVV pattern found
         """
-        # Look for "CVV" or "CVC" followed by 3-4 digits
         cvv_pattern = r"\b(CVV|CVC|CV2)[\s:]?\d{3,4}\b"
-        if re.search(cvv_pattern, text, re.IGNORECASE):
-            return True
-
-        # Also look for standalone 3-4 digit numbers near card
-        # (less reliable, so use cautiously)
-        standalone_pattern = r"\b\d{3,4}\b"
-        matches = re.findall(standalone_pattern, text)
-        # If we find exactly one 3-4 digit number, assume it's CVV
-        return len(matches) == 1
+        return bool(re.search(cvv_pattern, text, re.IGNORECASE))
 
     def _detect_card_network(self, card_number: str) -> str:
         """
