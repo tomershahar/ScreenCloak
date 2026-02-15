@@ -282,12 +282,20 @@ ScreenCloak processes everything locally. Nothing is sent anywhere.
 
 ---
 
+## Community
+
+**Discord:** [discord.gg/e46csQsuRc](https://discord.gg/e46csQsuRc) — questions, feedback, false positive reports, beta discussion.
+
+---
+
 ## Contributing
 
 Contributions welcome — especially:
 - Additional detection patterns (more crypto networks, more API key formats)
 - False positive reports with example screenshots
 - Performance improvements to reduce detection latency
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for full guidelines.
 
 ---
 
