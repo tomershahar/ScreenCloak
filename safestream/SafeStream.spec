@@ -41,6 +41,9 @@ a = Analysis(
         "pytesseract",
         # yaml
         "yaml",
+        # pystray
+        "pystray",
+        "pystray._darwin",
     ],
     hookspath=[],
     hooksconfig={},

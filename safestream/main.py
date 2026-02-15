@@ -57,6 +57,11 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Process one frame then exit (useful for CI / scripted tests)",
     )
+    parser.add_argument(
+        "--no-tray",
+        action="store_true",
+        help="Disable system tray icon (useful for headless/server environments)",
+    )
     return parser
 
 
@@ -106,6 +111,7 @@ class SafeStream:
         self._frame_differ: Any = None
         self._obs_client: Any = None
         self._logger: logging.Logger | None = None
+        self._tray: Any = None
 
     def setup(self) -> None:
         """Initialise all components. Raises on fatal errors."""
@@ -182,6 +188,13 @@ class SafeStream:
         else:
             self._logger.info("OBS integration disabled in config")
 
+        # 8. System tray (optional)
+        if not getattr(self.args, "no_tray", False):
+            from ui.tray import SystemTray  # noqa: PLC0415
+            self._tray = SystemTray(on_quit=self.shutdown)
+            self._tray.start()
+            self._logger.info("System tray icon started")
+
     def run(self) -> int:
         """
         Run the main scan loop.
@@ -207,6 +220,11 @@ class SafeStream:
         try:
             while self._running:
                 t_start = time.monotonic()
+
+                # Respect pause from tray menu
+                if self._tray is not None and self._tray.pause_event.is_set():
+                    time.sleep(0.1)
+                    continue
 
                 # Capture frame
                 try:
@@ -248,6 +266,13 @@ class SafeStream:
                         break
                     self._sleep_remainder(t_start, sleep_interval)
                     continue
+
+                # Update tray icon state
+                if self._tray is not None:
+                    if scan_result.should_blur or scan_result.should_warn:
+                        self._tray.set_state("alert")
+                    else:
+                        self._tray.set_state("clean")
 
                 # Handle detections
                 if scan_result.should_blur or scan_result.should_warn:
@@ -305,6 +330,10 @@ class SafeStream:
                 f"action={top.action} — logged only (no scene switch)"
             )
 
+        if self._tray is not None:
+            for _ in scan_result.detections:
+                self._tray.increment_detections()
+
     def _sleep_remainder(self, t_start: float, interval: float) -> None:
         """Sleep for whatever time remains in the current frame interval."""
         elapsed = time.monotonic() - t_start
@@ -315,6 +344,9 @@ class SafeStream:
     def shutdown(self) -> None:
         """Cleanly stop the scan loop and release all resources."""
         self._running = False
+
+        if self._tray is not None:
+            self._tray.stop()
 
         if self._obs_client is not None:
             try:
