@@ -53,8 +53,10 @@ class CreditCardDetector(BaseDetector):
 
         # Find candidate card numbers via two complementary methods:
         # 1. Regex: standard 4-4-4-4 grouping (handles well-spaced OCR output)
-        # 2. Digit stream: sliding 16-char window over all digits (handles OCR
-        #    that merges adjacent groups, e.g. "4111 1111" → "444111111")
+        # 2. Digit stream per-token: sliding 16-char window within a single OCR
+        #    token (handles OCR that merges groups, e.g. "4111 1111" → "41111111")
+        #    Applied PER TOKEN only — never across combined text, which would
+        #    create false positives from concatenated timestamps/log dates.
         found_card_numbers: set[str] = set()
 
         pattern = r"\b\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b"
@@ -62,10 +64,13 @@ class CreditCardDetector(BaseDetector):
             card_number = match.group().replace(" ", "").replace("-", "")
             found_card_numbers.add(card_number)
 
-        # Digit-stream fallback: strip all non-digits, slide a 16-char window
-        digits_only = re.sub(r"\D", "", cleaned_text)
-        for i in range(len(digits_only) - 15):
-            found_card_numbers.add(digits_only[i : i + 16])
+        # Digit-stream fallback: per-token only (never on combined text)
+        for ocr_result in ocr_results:
+            cleaned_token = self._fuzzy_digit_cleanup(ocr_result.text)
+            token_digits = re.sub(r"\D", "", cleaned_token)
+            if len(token_digits) >= 16:
+                for i in range(len(token_digits) - 15):
+                    found_card_numbers.add(token_digits[i : i + 16])
 
         detections: list[DetectionResult] = []
 
