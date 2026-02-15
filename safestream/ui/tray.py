@@ -1,0 +1,123 @@
+"""System tray / menu bar icon for SafeStream (macOS + Windows via pystray)."""
+from __future__ import annotations
+
+import threading
+from typing import Any, Callable, Literal
+
+try:
+    import pystray
+    from PIL import Image, ImageDraw
+    _PYSTRAY_AVAILABLE = True
+except ImportError:
+    _PYSTRAY_AVAILABLE = False
+
+# Icon colours for each state
+_COLORS: dict[str, tuple[int, int, int, int]] = {
+    "idle":  (128, 128, 128, 255),  # grey
+    "clean": (0,   200, 0,   255),  # green
+    "alert": (220, 50,  50,  255),  # red
+}
+
+
+def _make_icon(state: str, size: int = 64) -> Any:
+    """Draw a filled circle icon for the given state."""
+    color = _COLORS.get(state, _COLORS["idle"])
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    margin = 4
+    draw.ellipse([margin, margin, size - margin, size - margin], fill=color)
+    return img
+
+
+class SystemTray:
+    """
+    Manages the system tray / menu bar icon and menu.
+
+    Usage:
+        tray = SystemTray(on_quit=app.shutdown)
+        tray.start()                       # launches background thread
+        tray.set_state("alert")            # icon turns red
+        tray.increment_detections()        # bumps menu counter
+        tray.stop()                        # removes icon
+    """
+
+    def __init__(self, on_quit: Callable[[], None]) -> None:
+        self._on_quit = on_quit
+        self._state: str = "idle"
+        self._detection_count: int = 0
+        self._paused: bool = False
+        self._pause_event: threading.Event = threading.Event()
+        self._icon: Any = None
+        self._thread: threading.Thread | None = None
+
+    @property
+    def pause_event(self) -> threading.Event:
+        """Set when the user pauses scanning via the tray menu."""
+        return self._pause_event
+
+    def set_state(self, state: Literal["idle", "clean", "alert"]) -> None:
+        """Update icon colour. Call from any thread."""
+        self._state = state
+        if self._icon is not None:
+            try:
+                self._icon.icon = _make_icon(state)
+            except Exception:
+                pass
+
+    def increment_detections(self) -> None:
+        """Bump the detection counter shown in the menu."""
+        self._detection_count += 1
+        if self._icon is not None:
+            try:
+                self._icon.update_menu()
+            except Exception:
+                pass
+
+    def start(self) -> None:
+        """Start the tray icon in a daemon background thread. No-op if pystray not available."""
+        if not _PYSTRAY_AVAILABLE:
+            return
+
+        menu = pystray.Menu(
+            pystray.MenuItem("SafeStream", None, enabled=False),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem(
+                lambda item: "Pause" if not self._paused else "Resume",
+                self._toggle_pause,
+            ),
+            pystray.MenuItem(
+                lambda item: f"Detections: {self._detection_count}",
+                None,
+                enabled=False,
+            ),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Quit", self._quit),
+        )
+        self._icon = pystray.Icon(
+            "SafeStream",
+            icon=_make_icon("idle"),
+            title="SafeStream",
+            menu=menu,
+        )
+        self._thread = threading.Thread(target=self._icon.run, daemon=True, name="tray")
+        self._thread.start()
+
+    def stop(self) -> None:
+        """Remove the tray icon."""
+        if self._icon is not None:
+            try:
+                self._icon.stop()
+            except Exception:
+                pass
+
+    def _toggle_pause(self, icon: Any, item: Any) -> None:
+        self._paused = not self._paused
+        if self._paused:
+            self._pause_event.set()
+            self.set_state("idle")
+        else:
+            self._pause_event.clear()
+
+    def _quit(self, icon: Any, item: Any) -> None:
+        self.stop()
+        self._on_quit()
