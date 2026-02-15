@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -438,7 +439,7 @@ class TestPersonalStringsDetector:
 
 class TestAPIKeysDetector:
     def test_stub_returns_empty(self):
-        """V1 stub always returns empty list regardless of input."""
+        """Disabled detector always returns empty list regardless of input."""
         det = APIKeysDetector(MockAPIConfig())
         ocr = [OCRResult("AKIA1234567890ABCDEF", (0, 0, 200, 20), 0.90)]
         assert det.detect(ocr) == []
@@ -449,13 +450,67 @@ class TestAPIKeysDetector:
 
     def test_supported_services_list(self):
         """get_supported_services() should return > 0 services from JSON."""
-        det = APIKeysDetector(MockAPIConfig())
+        from dataclasses import dataclass as _dc
+
+        @_dc
+        class EnabledConfig:
+            enabled: bool = True
+
+        det = APIKeysDetector(EnabledConfig())
         services = det.get_supported_services()
         assert len(services) > 0
         # Known services that must be present
         assert "AWS" in services
         assert "GitHub" in services
         assert "Stripe" in services
+
+
+# ---------------------------------------------------------------------------
+# API key detection
+# ---------------------------------------------------------------------------
+
+class TestAPIKeyDetector:
+    """Tests for APIKeysDetector."""
+
+    def _make_config(self, enabled: bool = True) -> Any:
+        from dataclasses import dataclass
+
+        @dataclass
+        class APIKeysConfig:
+            enabled: bool = True
+
+        return APIKeysConfig(enabled=enabled)
+
+    def test_aws_key_detected(self) -> None:
+        from detectors.api_keys import APIKeysDetector
+        detector = APIKeysDetector(self._make_config())
+        ocr = [OCRResult(text="AKIAIOSFODNN7EXAMPLE", bounding_box=(0, 0, 200, 20), confidence=0.9)]
+        results = detector.detect(ocr)
+        assert len(results) == 1
+        assert results[0].type == "api_key"
+        assert results[0].metadata["service"] == "AWS"
+        assert results[0].action == "blur"
+
+    def test_github_token_detected(self) -> None:
+        from detectors.api_keys import APIKeysDetector
+        detector = APIKeysDetector(self._make_config())
+        token = "ghp_" + "a" * 36
+        ocr = [OCRResult(text=token, bounding_box=(0, 0, 300, 20), confidence=0.9)]
+        results = detector.detect(ocr)
+        assert len(results) == 1
+        assert results[0].metadata["service"] == "GitHub"
+
+    def test_disabled_returns_empty(self) -> None:
+        from detectors.api_keys import APIKeysDetector
+        detector = APIKeysDetector(self._make_config(enabled=False))
+        ocr = [OCRResult(text="AKIAIOSFODNN7EXAMPLE", bounding_box=(0, 0, 200, 20), confidence=0.9)]
+        assert detector.detect(ocr) == []
+
+    def test_no_false_positive_on_normal_text(self) -> None:
+        from detectors.api_keys import APIKeysDetector
+        detector = APIKeysDetector(self._make_config())
+        ocr = [OCRResult(text="Hello world, no secrets here.", bounding_box=(0, 0, 300, 20), confidence=0.9)]
+        assert detector.detect(ocr) == []
 
 
 # ---------------------------------------------------------------------------

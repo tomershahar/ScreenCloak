@@ -20,7 +20,7 @@ detection:
     networks: ["BTC", "ETH", "SOL"]
 
   api_keys:
-    enabled: false  # Paid tier feature
+    enabled: true
 
   personal_strings:
     enabled: true
