@@ -93,8 +93,8 @@ V1 uses a Python sidecar with OBS WebSocket. V2 will be a **native OBS plugin wr
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/yourname/screencloak.git
-cd screencloak
+git clone https://github.com/tomershahar/ScreenCloak.git
+cd ScreenCloak/screencloak
 pip install -r requirements.txt
 ```
 
@@ -133,7 +133,7 @@ Output: `dist\ScreenCloak-1.0.0-Setup.exe`
 
 ### Step 3: Configure OBS
 
-> See the full [OBS Setup Guide](../docs/OBS_SETUP.md) for screenshots and troubleshooting.
+> See the full [OBS Setup Guide](docs/OBS_SETUP.md) for screenshots and troubleshooting.
 
 **3a. Enable OBS WebSocket:**
 1. In OBS, go to `Tools → WebSocket Server Settings`
@@ -331,7 +331,7 @@ Contributions welcome — especially:
 - False positive reports with example screenshots
 - Performance improvements to reduce detection latency
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for full guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
 ---
 

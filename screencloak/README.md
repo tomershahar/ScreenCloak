@@ -93,8 +93,8 @@ V1 uses a Python sidecar with OBS WebSocket. V2 will be a **native OBS plugin wr
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/yourname/screencloak.git
-cd screencloak
+git clone https://github.com/tomershahar/ScreenCloak.git
+cd ScreenCloak/screencloak
 pip install -r requirements.txt
 ```
 
