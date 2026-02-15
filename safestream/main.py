@@ -275,10 +275,12 @@ class ScreenCloak:
 
                 # Update tray icon state
                 if self._tray is not None:
-                    if scan_result.should_blur or scan_result.should_warn:
-                        self._tray.set_state("alert")
+                    if scan_result.should_blur:
+                        self._tray.set_state("alert")   # red — OBS switched
+                    elif scan_result.should_warn:
+                        self._tray.set_state("warn")    # orange — logged only
                     else:
-                        self._tray.set_state("clean")
+                        self._tray.set_state("clean")   # green — clear
 
                 # Handle detections
                 if scan_result.should_blur or scan_result.should_warn:
