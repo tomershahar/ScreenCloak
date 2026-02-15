@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-# Make the safestream package importable from tests/
+# Make the screencloak package importable from tests/
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from dataclasses import dataclass

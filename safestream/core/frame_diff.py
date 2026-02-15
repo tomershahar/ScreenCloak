@@ -8,7 +8,7 @@ from typing import Any
 import cv2
 import numpy as np
 
-logger = logging.getLogger("safestream.frame_diff")
+logger = logging.getLogger("screencloak.frame_diff")
 
 
 class FrameDiffer:

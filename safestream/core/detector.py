@@ -13,7 +13,7 @@ from detectors.crypto_address import CryptoAddressDetector
 from detectors.personal_strings import PersonalStringsDetector
 from detectors.seed_phrase import SeedPhraseDetector
 
-logger = logging.getLogger("safestream.detector")
+logger = logging.getLogger("screencloak.detector")
 
 
 @dataclass

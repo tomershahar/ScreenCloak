@@ -1,10 +1,10 @@
 [project]
-name = "safestream"
+name = "screencloak"
 version = "0.1.0"
 description = "Real-time sensitive data detection for OBS streams"
 requires-python = ">=3.11"
 authors = [
-    {name = "SafeStream Team"}
+    {name = "ScreenCloak Team"}
 ]
 readme = "README.md"
 license = {text = "MIT"}
@@ -32,7 +32,7 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "--cov=safestream --cov-report=term-missing"
+addopts = "--cov=screencloak --cov-report=term-missing"
 
 [build-system]
 requires = ["setuptools>=61.0"]

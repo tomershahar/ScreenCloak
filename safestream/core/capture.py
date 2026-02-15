@@ -10,7 +10,7 @@ from typing import Any
 import cv2
 import numpy as np
 
-logger = logging.getLogger("safestream.capture")
+logger = logging.getLogger("screencloak.capture")
 
 
 class CaptureBase(ABC):
@@ -52,14 +52,14 @@ class ScreenCapture(CaptureBase):
 
     Monitor indexing (mss convention):
     - Index 0: all monitors combined into one giant virtual canvas
-    - Index 1: primary monitor (default for SafeStream)
+    - Index 1: primary monitor (default for ScreenCloak)
     - Index 2+: additional monitors
 
     Output: RGB numpy array. mss natively returns BGRA — we strip the
     alpha channel and swap B↔R to give OCR engines standard RGB.
 
     Thread safety: mss is NOT thread-safe. Each thread must create its
-    own ScreenCapture instance. SafeStream's main loop is single-threaded
+    own ScreenCapture instance. ScreenCloak's main loop is single-threaded
     so this is fine.
     """
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# scripts/build_mac.sh — Build, sign, package, and notarize SafeStream.app
+# scripts/build_mac.sh — Build, sign, package, and notarize ScreenCloak.app
 #
 # Required environment variables for signing/notarizing:
 #   APPLE_ID           — your Apple ID email
@@ -14,10 +14,10 @@
 set -euo pipefail
 
 VERSION="1.0.0"
-APP_NAME="SafeStream"
+APP_NAME="ScreenCloak"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 
-echo "=== SafeStream macOS Build ==="
+echo "=== ScreenCloak macOS Build ==="
 echo "Version: $VERSION"
 echo ""
 
@@ -33,7 +33,7 @@ if command -v pyinstaller &>/dev/null; then
 else
     PYINSTALLER_CMD="python3 -m PyInstaller"
 fi
-$PYINSTALLER_CMD SafeStream.spec --clean --noconfirm
+$PYINSTALLER_CMD ScreenCloak.spec --clean --noconfirm
 echo "✓ dist/${APP_NAME}.app created"
 
 # ── 3. Code signing ──────────────────────────────────────────────────────────

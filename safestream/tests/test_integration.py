@@ -14,7 +14,7 @@ All tests are skipped automatically if:
   - Tesseract is not installed  (pytesseract ImportError / binary missing)
   - Test images are missing     (data/test_images/ not found)
 
-Run from the safestream/ directory:
+Run from the screencloak/ directory:
     pytest tests/test_integration.py -v
 """
 
@@ -29,12 +29,12 @@ import pytest
 from PIL import Image as PILImage
 
 # ---------------------------------------------------------------------------
-# Path setup — make safestream packages importable when run directly
+# Path setup — make screencloak packages importable when run directly
 # ---------------------------------------------------------------------------
 
-_SAFESTREAM_DIR = Path(__file__).parent.parent
-if str(_SAFESTREAM_DIR) not in sys.path:
-    sys.path.insert(0, str(_SAFESTREAM_DIR))
+_SCREENCLOAK_DIR = Path(__file__).parent.parent
+if str(_SCREENCLOAK_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCREENCLOAK_DIR))
 
 # ---------------------------------------------------------------------------
 # Skip conditions
@@ -59,7 +59,7 @@ require_tesseract = pytest.mark.skipif(
 )
 
 # Test image directory
-_IMAGE_DIR = _SAFESTREAM_DIR / "data" / "test_images"
+_IMAGE_DIR = _SCREENCLOAK_DIR / "data" / "test_images"
 require_images = pytest.mark.skipif(
     not _IMAGE_DIR.is_dir(),
     reason="data/test_images/ not found — run tests/generate_test_images.py first",
@@ -85,7 +85,7 @@ def pipeline():
     from core.config_manager import ConfigManager
     from core.detector import DetectorPipeline
 
-    config = ConfigManager.load(str(_SAFESTREAM_DIR / "config.yaml"))
+    config = ConfigManager.load(str(_SCREENCLOAK_DIR / "config.yaml"))
     return DetectorPipeline(config)
 
 

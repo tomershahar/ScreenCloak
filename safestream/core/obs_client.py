@@ -6,7 +6,7 @@ import logging
 import threading
 from typing import Any
 
-logger = logging.getLogger("safestream.obs_client")
+logger = logging.getLogger("screencloak.obs_client")
 
 
 class OBSClient:
@@ -23,7 +23,7 @@ class OBSClient:
     reset so the privacy scene stays up for the full duration from the
     latest detection.
 
-    Connection is best-effort — SafeStream continues working (logging
+    Connection is best-effort — ScreenCloak continues working (logging
     detections) even when OBS is not connected. This allows testing
     detectors without OBS running.
 
@@ -73,7 +73,7 @@ class OBSClient:
         Connect to the OBS WebSocket server.
 
         Safe to call multiple times — returns True immediately if already
-        connected. Failure is logged but does not raise, so SafeStream
+        connected. Failure is logged but does not raise, so ScreenCloak
         can run without OBS.
 
         Returns:
@@ -111,7 +111,7 @@ class OBSClient:
         except Exception as e:
             logger.warning(
                 f"OBS connection failed ({self._host}:{self._port}): {e}\n"
-                "SafeStream will continue but cannot switch OBS scenes.\n"
+                "ScreenCloak will continue but cannot switch OBS scenes.\n"
                 "Ensure OBS is running with WebSocket server enabled."
             )
             return False

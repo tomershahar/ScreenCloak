@@ -1,4 +1,4 @@
-# OBS Setup Guide for SafeStream
+# OBS Setup Guide for ScreenCloak
 
 Complete setup guide: WebSocket connection, Privacy Mode scene, and Stream Delay.
 
@@ -7,13 +7,13 @@ Complete setup guide: WebSocket connection, Privacy Mode scene, and Stream Delay
 ## Prerequisites
 
 - OBS Studio 28 or later
-- SafeStream installed and `config.yaml` configured
+- ScreenCloak installed and `config.yaml` configured
 
 ---
 
 ## Step 1: Enable OBS WebSocket
 
-SafeStream connects to OBS over WebSocket to trigger scene switches.
+ScreenCloak connects to OBS over WebSocket to trigger scene switches.
 
 1. Open OBS Studio
 2. Go to **Tools → WebSocket Server Settings**
@@ -28,7 +28,7 @@ SafeStream connects to OBS over WebSocket to trigger scene switches.
 
 ## Step 2: Create a "Privacy Mode" Scene
 
-This is the scene OBS switches to when SafeStream detects sensitive data.
+This is the scene OBS switches to when ScreenCloak detects sensitive data.
 
 1. In the **Scenes** panel (bottom-left), click **+**
 2. Name it exactly: `Privacy Mode`
@@ -42,9 +42,9 @@ This is the scene OBS switches to when SafeStream detects sensitive data.
 
 ## Step 3: Add Stream Delay (REQUIRED)
 
-**Without this step, SafeStream cannot prevent sensitive data from reaching viewers.**
+**Without this step, ScreenCloak cannot prevent sensitive data from reaching viewers.**
 
-SafeStream's detection takes ~100–400ms. Without a delay, OBS encodes and uploads frames ~50ms after they appear — faster than SafeStream can react.
+ScreenCloak's detection takes ~100–400ms. Without a delay, OBS encodes and uploads frames ~50ms after they appear — faster than ScreenCloak can react.
 
 ### Enable Stream Delay
 
@@ -58,8 +58,8 @@ SafeStream's detection takes ~100–400ms. Without a delay, OBS encodes and uplo
 
 ```
 T+0ms     Secret appears on your screen
-T+0ms     SafeStream starts OCR (you see it live, no delay for you)
-T+400ms   SafeStream detects it → switches OBS to Privacy Mode
+T+0ms     ScreenCloak starts OCR (you see it live, no delay for you)
+T+400ms   ScreenCloak detects it → switches OBS to Privacy Mode
 T+5000ms  Twitch/YouTube broadcasts the frame from T+0 (the secret)
 T+5400ms  Twitch/YouTube broadcasts the Privacy Mode frame (safe)
 ```
@@ -71,7 +71,7 @@ For a deeper explanation see [OBS_STREAM_DELAY_SETUP.md](./OBS_STREAM_DELAY_SETU
 
 ---
 
-## Step 4: Configure SafeStream for OBS
+## Step 4: Configure ScreenCloak for OBS
 
 Edit `config.yaml`:
 
@@ -89,10 +89,10 @@ obs:
 
 ## Step 5: Test the Connection
 
-Run SafeStream in mock mode — no real screen capture, just a test image:
+Run ScreenCloak in mock mode — no real screen capture, just a test image:
 
 ```bash
-cd safestream
+cd screencloak
 python3 main.py --mock data/test_images/seed_phrase_12word.png
 ```
 

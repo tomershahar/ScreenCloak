@@ -1,4 +1,4 @@
-"""Configuration management for SafeStream."""
+"""Configuration management for ScreenCloak."""
 
 from __future__ import annotations
 
@@ -299,7 +299,7 @@ class ConfigManager:
     @staticmethod
     def _create_default_config(config_path: Path) -> None:
         """Create default config.yaml file."""
-        default_config = """# SafeStream Configuration
+        default_config = """# ScreenCloak Configuration
 
 # OCR Settings
 ocr:

@@ -1,10 +1,10 @@
 """
-SafeStream Detection Benchmark Suite — Task 22.
+ScreenCloak Detection Benchmark Suite — Task 22.
 
 Measures detection accuracy (true/false positive rates) and latency
 (OCR + end-to-end) across all synthetic test images.
 
-Run from the safestream/ directory:
+Run from the screencloak/ directory:
     python tests/benchmark.py
 
 # TODO: Add pytest integration so threshold checks can run as CI assertions.
@@ -24,14 +24,14 @@ import numpy as np
 from PIL import Image as PILImage
 
 # ---------------------------------------------------------------------------
-# Path setup — make safestream packages importable when run directly
+# Path setup — make screencloak packages importable when run directly
 # ---------------------------------------------------------------------------
 
-_SAFESTREAM_DIR = Path(__file__).parent.parent
-if str(_SAFESTREAM_DIR) not in sys.path:
-    sys.path.insert(0, str(_SAFESTREAM_DIR))
+_SCREENCLOAK_DIR = Path(__file__).parent.parent
+if str(_SCREENCLOAK_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCREENCLOAK_DIR))
 
-_IMAGE_DIR = _SAFESTREAM_DIR / "data" / "test_images"
+_IMAGE_DIR = _SCREENCLOAK_DIR / "data" / "test_images"
 
 # ---------------------------------------------------------------------------
 # Ground truth table
@@ -164,7 +164,7 @@ def run_benchmark() -> Optional[BenchmarkReport]:
         from core.config_manager import ConfigManager
         from core.detector import DetectorPipeline
     except ImportError as e:
-        print(f"ERROR: Could not import SafeStream modules: {e}")
+        print(f"ERROR: Could not import ScreenCloak modules: {e}")
         return None
 
     try:
@@ -174,7 +174,7 @@ def run_benchmark() -> Optional[BenchmarkReport]:
         print("       Is Tesseract installed? brew install tesseract")
         return None
 
-    config = ConfigManager.load(str(_SAFESTREAM_DIR / "config.yaml"))
+    config = ConfigManager.load(str(_SCREENCLOAK_DIR / "config.yaml"))
     pipeline = DetectorPipeline(config)
 
     case_results: list[CaseResult] = []
@@ -297,7 +297,7 @@ def print_report(report: BenchmarkReport) -> None:
     overall = meets_tp and meets_fp and meets_lat
     print()
     if overall:
-        print("  ✅  OVERALL PASS — SafeStream meets M1 acceptance criteria")
+        print("  ✅  OVERALL PASS — ScreenCloak meets M1 acceptance criteria")
     else:
         print("  ❌  OVERALL FAIL — one or more criteria not met")
     print()
@@ -314,7 +314,7 @@ def _verdict_line(label: str, passed: bool, value: str) -> None:
 
 
 def main() -> None:
-    print("SafeStream Detection Benchmark")
+    print("ScreenCloak Detection Benchmark")
     print("=" * 72)
     print(f"Test images: {_IMAGE_DIR}")
     print(f"Runs per image: {RUNS_PER_IMAGE}")

@@ -1,4 +1,4 @@
-"""System tray / menu bar icon for SafeStream (macOS + Windows via pystray)."""
+"""System tray / menu bar icon for ScreenCloak (macOS + Windows via pystray)."""
 from __future__ import annotations
 
 import threading
@@ -79,7 +79,7 @@ class SystemTray:
             return
 
         menu = pystray.Menu(
-            pystray.MenuItem("SafeStream", None, enabled=False),
+            pystray.MenuItem("ScreenCloak", None, enabled=False),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem(
                 lambda item: "Pause" if not self._paused else "Resume",
@@ -94,9 +94,9 @@ class SystemTray:
             pystray.MenuItem("Quit", self._quit),
         )
         self._icon = pystray.Icon(
-            "SafeStream",
+            "ScreenCloak",
             icon=_make_icon("idle"),
-            title="SafeStream",
+            title="ScreenCloak",
             menu=menu,
         )
         self._thread = threading.Thread(target=self._icon.run, daemon=True, name="tray")

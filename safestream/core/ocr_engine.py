@@ -11,7 +11,7 @@ import numpy as np
 
 from detectors.base import OCRResult
 
-logger = logging.getLogger("safestream.ocr_engine")
+logger = logging.getLogger("screencloak.ocr_engine")
 
 
 # ---------------------------------------------------------------------------
@@ -443,7 +443,7 @@ def test_ocr_engine() -> None:
     print("\nTest 1: TesseractEngine — white background text")
     img = Image.new("RGB", (500, 60), color="white")
     draw = ImageDraw.Draw(img)
-    draw.text((10, 15), "Hello SafeStream 1234", fill="black")
+    draw.text((10, 15), "Hello ScreenCloak 1234", fill="black")
     img_array = np.array(img)
 
     try:
@@ -451,7 +451,7 @@ def test_ocr_engine() -> None:
         results = engine.detect_text(img_array)
         texts = [r.text for r in results]
         full_text = " ".join(texts)
-        if "Hello" in full_text or "SafeStream" in full_text or "1234" in full_text:
+        if "Hello" in full_text or "ScreenCloak" in full_text or "1234" in full_text:
             print(f"  ✓ Detected {len(results)} word(s): {texts}")
         else:
             print(f"  ✗ Expected text not found. Got: {texts}")
@@ -511,7 +511,7 @@ def test_ocr_engine() -> None:
     print("\nTest 6: PaddleOCREngine — white background text")
     img_paddle = Image.new("RGB", (800, 120), color="white")
     draw_paddle = ImageDraw.Draw(img_paddle)
-    draw_paddle.text((20, 40), "SafeStream 9999", fill="black")
+    draw_paddle.text((20, 40), "ScreenCloak 9999", fill="black")
     img_paddle_array = np.array(img_paddle)
 
     try:
@@ -519,7 +519,7 @@ def test_ocr_engine() -> None:
         results_paddle = paddle_engine.detect_text(img_paddle_array)
         texts_paddle = [r.text for r in results_paddle]
         full_paddle = " ".join(texts_paddle)
-        if "SafeStream" in full_paddle or "9999" in full_paddle:
+        if "ScreenCloak" in full_paddle or "9999" in full_paddle:
             print(f"  ✓ PaddleOCR detected: {texts_paddle}")
         else:
             print(f"  ✗ Expected text not found. Got: {texts_paddle}")

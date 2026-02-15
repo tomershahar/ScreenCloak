@@ -1,5 +1,5 @@
 """
-Generate synthetic test images for SafeStream detection tests.
+Generate synthetic test images for ScreenCloak detection tests.
 
 All images use a system font at readable size (28-40pt) so both
 TesseractEngine and PaddleOCREngine can read them reliably.
@@ -19,7 +19,7 @@ import os
 import sys
 from pathlib import Path
 
-# Make the safestream package importable
+# Make the screencloak package importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from PIL import Image, ImageDraw, ImageFont

@@ -1,8 +1,8 @@
-# SafeStream Project - Claude Context
+# ScreenCloak Project - Claude Context
 
 ## Project Overview
 
-**SafeStream** is an OBS Studio plugin that automatically detects and redacts sensitive information from a streamer's screen in real-time using OCR and pattern matching. It prevents accidental exposure of crypto seed phrases, wallet addresses, credit cards, API keys, and personal data during live streams.
+**ScreenCloak** is an OBS Studio plugin that automatically detects and redacts sensitive information from a streamer's screen in real-time using OCR and pattern matching. It prevents accidental exposure of crypto seed phrases, wallet addresses, credit cards, API keys, and personal data during live streams.
 
 **Current Phase:** M1 - Core Detection Engine (Week 1-2)
 **Status:** Starting implementation from scratch
@@ -10,7 +10,7 @@
 
 ## Core Value Proposition
 
-Streamers regularly leak sensitive info (seed phrases, passwords, credit cards) on stream with catastrophic consequences (documented $100K+ losses). No existing solution provides intelligent, cross-app, screen-level detection. SafeStream fills this gap.
+Streamers regularly leak sensitive info (seed phrases, passwords, credit cards) on stream with catastrophic consequences (documented $100K+ losses). No existing solution provides intelligent, cross-app, screen-level detection. ScreenCloak fills this gap.
 
 ## Technical Architecture
 
@@ -85,7 +85,7 @@ We do NOT need to achieve "zero latency" - that's impossible with Python OCR. In
 ## Project Structure
 
 ```
-safestream/
+screencloak/
 ├── main.py                    # Entry point & main loop
 ├── config.yaml                # User configuration
 ├── requirements.txt           # Dependencies
@@ -150,7 +150,7 @@ safestream/
 **Error Handling:**
 - Graceful degradation (e.g., if OCR fails, log and continue)
 - User-friendly error messages in logs
-- Never crash - SafeStream runs as long-running process
+- Never crash - ScreenCloak runs as long-running process
 
 ### Security & Privacy
 
@@ -272,7 +272,7 @@ This simple fix dramatically improves Tesseract accuracy on terminals, IDEs, and
 - Python OCR cannot react faster than OBS encodes frames (impossible goal)
 - **Solution:** User adds OBS "Render Delay" filter (2-5 seconds) to stream output
 - Streamer sees real-time, viewers see delayed, script has time to react
-- **This is REQUIRED for SafeStream to work** - must be in setup instructions
+- **This is REQUIRED for ScreenCloak to work** - must be in setup instructions
 
 **Python Performance:**
 - OCR latency 200-500ms is acceptable with Stream Delay buffer
@@ -402,9 +402,9 @@ The original plan included M4 (Native OBS Plugin) to enable surgical blur overla
 - Then Task 18: `main.py` entry point
 
 **Running scripts:**
-All scripts run from `/Users/tomershahar/SafeSense/safestream/` as modules:
+All scripts run from `/Users/tomershahar/SafeSense/screencloak/` as modules:
 ```bash
-cd /Users/tomershahar/SafeSense/safestream
+cd /Users/tomershahar/SafeSense/screencloak
 python3 -m core.detector       # runs detector.py standalone test
 python3 -m detectors.seed_phrase
 ```

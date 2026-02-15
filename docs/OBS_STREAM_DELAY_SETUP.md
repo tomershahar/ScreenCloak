@@ -1,8 +1,8 @@
 # OBS Stream Delay Setup Guide
 
-**This step is required for SafeStream to protect you.**
+**This step is required for ScreenCloak to protect you.**
 
-Without a stream delay, frames leave your computer ~50ms after they appear on screen. SafeStream's OCR detection takes ~200–500ms. By the time SafeStream reacts, the sensitive frame has already been uploaded to Twitch.
+Without a stream delay, frames leave your computer ~50ms after they appear on screen. ScreenCloak's OCR detection takes ~200–500ms. By the time ScreenCloak reacts, the sensitive frame has already been uploaded to Twitch.
 
 ---
 
@@ -34,7 +34,7 @@ Without a stream delay, frames leave your computer ~50ms after they appear on sc
 
 ## Step 3: Add Stream Delay ⚠️ CRITICAL
 
-This is the most important step. Without it, SafeStream **cannot** prevent sensitive data from reaching viewers.
+This is the most important step. Without it, ScreenCloak **cannot** prevent sensitive data from reaching viewers.
 
 ### Option A: OBS Stream Delay (Recommended)
 
@@ -60,21 +60,21 @@ This is the most important step. Without it, SafeStream **cannot** prevent sensi
 
 ```
 T + 0ms:    Secret appears on your screen
-T + 0ms:    SafeStream starts OCR (you see it in real-time)
-T + 400ms:  SafeStream detects it → switches OBS to Privacy Mode
+T + 0ms:    ScreenCloak starts OCR (you see it in real-time)
+T + 400ms:  ScreenCloak detects it → switches OBS to Privacy Mode
 T + 5000ms: Twitch starts broadcasting the frame from T=0 (secret)
 T + 5400ms: Twitch starts broadcasting the Privacy Mode frame (safe)
 ```
 
 Your viewers see ~400ms of the sensitive content as a brief flash before the Privacy Mode screen appears. This is the V1 exposure window.
 
-**With a 2-second delay:** exposure window is still ~400ms, but you have less buffer if SafeStream is slow on a given frame.
+**With a 2-second delay:** exposure window is still ~400ms, but you have less buffer if ScreenCloak is slow on a given frame.
 
 **With a 5-second delay:** you have a 4.6-second safety margin beyond the typical detection time.
 
 ---
 
-## Step 4: Configure SafeStream
+## Step 4: Configure ScreenCloak
 
 Edit `config.yaml`:
 
@@ -92,15 +92,15 @@ obs:
 
 ## Step 5: Verify the Setup
 
-Run SafeStream in mock mode to test the OBS connection:
+Run ScreenCloak in mock mode to test the OBS connection:
 
 ```bash
-cd safestream
+cd screencloak
 python main.py --mock data/test_images/seed_phrase_12word.png
 ```
 
 You should see:
-1. SafeStream logs: `OBS connected — localhost:4455`
+1. ScreenCloak logs: `OBS connected — localhost:4455`
 2. OBS switches to your **Privacy Mode** scene
 3. After `return_delay` seconds, OBS returns to your previous scene
 

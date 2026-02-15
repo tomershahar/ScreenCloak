@@ -1,5 +1,5 @@
 {
-  "_comment": "API key regex patterns for SafeStream detection. Paid tier feature.",
+  "_comment": "API key regex patterns for ScreenCloak detection. Paid tier feature.",
   "_format": "Each entry: { 'pattern': regex, 'description': human-readable, 'confidence': 0.0-1.0 }",
 
   "AWS": [

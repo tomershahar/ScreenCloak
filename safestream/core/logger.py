@@ -1,4 +1,4 @@
-"""Logging utilities for SafeStream with sanitization support."""
+"""Logging utilities for ScreenCloak with sanitization support."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ LOGS_DIR.mkdir(exist_ok=True)
 
 # Log file paths
 DETECTION_LOG = LOGS_DIR / "detections.log"
-APP_LOG = LOGS_DIR / "safestream.log"
+APP_LOG = LOGS_DIR / "screencloak.log"
 
 
 def setup_logging(level: int = logging.INFO) -> logging.Logger:
@@ -30,7 +30,7 @@ def setup_logging(level: int = logging.INFO) -> logging.Logger:
     Returns:
         Configured logger instance
     """
-    logger = logging.getLogger("safestream")
+    logger = logging.getLogger("screencloak")
     logger.setLevel(level)
 
     # Prevent duplicate handlers
@@ -116,7 +116,7 @@ def log_performance(
         duration_ms: Duration in milliseconds
         details: Optional additional details
     """
-    logger = logging.getLogger("safestream.performance")
+    logger = logging.getLogger("screencloak.performance")
 
     log_entry = {
         "timestamp": datetime.now().isoformat(),
@@ -181,7 +181,7 @@ def clear_detection_log(log_file: Path = DETECTION_LOG) -> None:
     if log_file.exists():
         log_file.unlink()
 
-    logger = logging.getLogger("safestream")
+    logger = logging.getLogger("screencloak")
     logger.info(f"Cleared detection log: {log_file}")
 
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     logger = setup_logging(logging.DEBUG)
 
     logger.debug("This is a debug message")
-    logger.info("SafeStream logging initialized")
+    logger.info("ScreenCloak logging initialized")
     logger.warning("This is a warning")
     logger.error("This is an error")
 

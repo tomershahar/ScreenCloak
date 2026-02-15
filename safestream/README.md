@@ -1,8 +1,8 @@
-# SafeStream
+# ScreenCloak
 
 **Real-time sensitive data detection for live streamers.**
 
-SafeStream watches your screen while you stream and automatically switches OBS to a "Be Right Back" scene when it detects sensitive information — seed phrases, credit card numbers, crypto wallet addresses, API keys, or your personal info.
+ScreenCloak watches your screen while you stream and automatically switches OBS to a "Be Right Back" scene when it detects sensitive information — seed phrases, credit card numbers, crypto wallet addresses, API keys, or your personal info.
 
 ---
 
@@ -20,10 +20,10 @@ SafeStream watches your screen while you stream and automatically switches OBS t
 
 ## How It Works
 
-SafeStream runs alongside OBS as a "sidecar" application. It captures your screen in real-time, runs OCR to read on-screen text, and triggers an OBS scene switch the moment it detects something sensitive.
+ScreenCloak runs alongside OBS as a "sidecar" application. It captures your screen in real-time, runs OCR to read on-screen text, and triggers an OBS scene switch the moment it detects something sensitive.
 
 ```
-Your screen (raw) ──→ SafeStream OCR → Detection → OBS WebSocket
+Your screen (raw) ──→ ScreenCloak OCR → Detection → OBS WebSocket
                                                           ↓
 Your viewers ←── Twitch/YouTube ←── OBS Output (delayed)
 ```
@@ -32,22 +32,22 @@ Your viewers ←── Twitch/YouTube ←── OBS Output (delayed)
 
 ## ⚠️ Important: How Protection Actually Works (Please Read)
 
-**SafeStream provides strong protection, but not instant protection. Here is exactly what happens:**
+**ScreenCloak provides strong protection, but not instant protection. Here is exactly what happens:**
 
 ### The Stream Delay Requirement
 
-For SafeStream to protect you, you **must** add an OBS **Render Delay** filter (minimum 2 seconds, recommended 5 seconds) to your stream output. Without it, SafeStream **cannot protect you**.
+For ScreenCloak to protect you, you **must** add an OBS **Render Delay** filter (minimum 2 seconds, recommended 5 seconds) to your stream output. Without it, ScreenCloak **cannot protect you**.
 
 Here's why:
 
-Without a stream delay, frames leave your computer ~50ms after they appear on screen. SafeStream's OCR detection takes ~200–500ms. By the time SafeStream reacts, the sensitive frame has already been uploaded to Twitch.
+Without a stream delay, frames leave your computer ~50ms after they appear on screen. ScreenCloak's OCR detection takes ~200–500ms. By the time ScreenCloak reacts, the sensitive frame has already been uploaded to Twitch.
 
 **With a 5-second stream delay configured:**
 
 ```
 T + 0ms:    Secret appears on your screen
-T + 0ms:    SafeStream starts OCR processing (you see it in real-time)
-T + 400ms:  SafeStream detects it → OBS switches to BRB scene
+T + 0ms:    ScreenCloak starts OCR processing (you see it in real-time)
+T + 400ms:  ScreenCloak detects it → OBS switches to BRB scene
 T + 5000ms: Twitch starts broadcasting the frame from T+0ms (secret)
 T + 5400ms: Twitch starts broadcasting the BRB frame (safe)
 ```
@@ -56,7 +56,7 @@ T + 5400ms: Twitch starts broadcasting the BRB frame (safe)
 
 ### V1 Security Model — What This Means
 
-| Scenario | Without SafeStream | With SafeStream V1 (+ Stream Delay) |
+| Scenario | Without ScreenCloak | With ScreenCloak V1 (+ Stream Delay) |
 |---|---|---|
 | Seed phrase visible for 10 seconds | Full 10s exposure to all viewers | ~400ms flash before BRB screen |
 | Credit card on screen briefly | Full exposure | ~400ms flash |
@@ -93,8 +93,8 @@ V1 uses a Python sidecar with OBS WebSocket. V2 will be a **native OBS plugin wr
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/yourname/safestream.git
-cd safestream
+git clone https://github.com/yourname/screencloak.git
+cd screencloak
 pip install -r requirements.txt
 ```
 
@@ -108,7 +108,7 @@ brew install tesseract
 **Windows:** Download and run the UB-Mannheim installer (use the default install path):
 `https://github.com/UB-Mannheim/tesseract/wiki`
 
-> SafeStream expects Tesseract at `C:\Program Files\Tesseract-OCR\tesseract.exe`. If you installed it elsewhere, set `TESSDATA_PREFIX` and the path in `config.yaml`.
+> ScreenCloak expects Tesseract at `C:\Program Files\Tesseract-OCR\tesseract.exe`. If you installed it elsewhere, set `TESSDATA_PREFIX` and the path in `config.yaml`.
 
 ---
 
@@ -127,7 +127,7 @@ Requires:
 - PyInstaller (`pip install pyinstaller`)
 - Inno Setup 6 (`https://jrsoftware.org/isdl.php`)
 
-Output: `dist\SafeStream-1.0.0-Setup.exe`
+Output: `dist\ScreenCloak-1.0.0-Setup.exe`
 
 > **First run on Windows:** Windows SmartScreen may warn "unrecognized app" because the installer is unsigned. Click **More info → Run anyway** to proceed.
 
@@ -154,9 +154,9 @@ Output: `dist\SafeStream-1.0.0-Setup.exe`
 3. Enable it and set to `5000ms` (5 seconds)
 4. Click OK
 
-> Without this step, SafeStream will still detect and log sensitive data, but **cannot prevent it from reaching viewers**.
+> Without this step, ScreenCloak will still detect and log sensitive data, but **cannot prevent it from reaching viewers**.
 
-### Step 4: Configure SafeStream
+### Step 4: Configure ScreenCloak
 
 Edit `config.yaml`:
 
@@ -197,7 +197,7 @@ python main.py --no-tray
 
 ## System Tray
 
-When SafeStream is running, a small icon appears in your menu bar (macOS) or system tray (Windows):
+When ScreenCloak is running, a small icon appears in your menu bar (macOS) or system tray (Windows):
 
 | Icon colour | Meaning |
 |---|---|
@@ -208,7 +208,7 @@ When SafeStream is running, a small icon appears in your menu bar (macOS) or sys
 **Right-click (or click) the icon to open the menu:**
 
 ```
-SafeStream
+ScreenCloak
 ──────────
 ⏸  Pause         ← click to pause/resume scanning
 Detections: 0    ← running count of detections this session
@@ -216,7 +216,7 @@ Detections: 0    ← running count of detections this session
 Quit
 ```
 
-Use **Pause** when you intentionally display sensitive content (e.g. entering a seed phrase you're testing). SafeStream will skip OCR while paused.
+Use **Pause** when you intentionally display sensitive content (e.g. entering a seed phrase you're testing). ScreenCloak will skip OCR while paused.
 
 ---
 
@@ -230,7 +230,7 @@ python3 tests/benchmark.py
 
 Example output:
 ```
-SafeStream Detection Benchmark
+ScreenCloak Detection Benchmark
 ========================================================================
   PASS  seed_phrase_12word.png   detected=seed_phrase    e2e=84ms
   PASS  credit_card_visa.png     detected=credit_card    e2e=66ms
@@ -242,7 +242,7 @@ SUMMARY
   False Positive Rate:  0/1  (0.0%)
   E2E P95 latency:      118ms
 
-VERDICT: ✅ OVERALL PASS — SafeStream meets M1 acceptance criteria
+VERDICT: ✅ OVERALL PASS — ScreenCloak meets M1 acceptance criteria
 ```
 
 To benchmark raw OCR engine performance (latency only, no detection pipeline):
@@ -256,7 +256,7 @@ python3 benchmark_ocr.py
 
 ## Privacy
 
-SafeStream processes everything locally. Nothing is sent anywhere.
+ScreenCloak processes everything locally. Nothing is sent anywhere.
 
 - **Detection logs** (`logs/detections.log`) store only detection type, confidence, and timestamp — never the actual detected text
 - **No telemetry** by default — opt-in only via `config.yaml`
@@ -300,13 +300,13 @@ MIT — detection engine is open source.
 ## FAQ
 
 **Q: Does this record my screen?**
-No. SafeStream captures frames for OCR processing in memory only. Nothing is written to disk except sanitized detection logs.
+No. ScreenCloak captures frames for OCR processing in memory only. Nothing is written to disk except sanitized detection logs.
 
 **Q: What if it triggers a false positive on stream?**
-SafeStream will switch to your Privacy Mode scene briefly. You can tune the sensitivity via `fuzzy_threshold` and `confidence` settings in `config.yaml`.
+ScreenCloak will switch to your Privacy Mode scene briefly. You can tune the sensitivity via `fuzzy_threshold` and `confidence` settings in `config.yaml`.
 
 **Q: Why do I need a Stream Delay? My internet is fast.**
-Internet speed is not the issue. OBS encodes and uploads video frames ~50ms after they appear on screen — faster than any OCR engine can process them. The Stream Delay creates a buffer between your screen and what viewers actually see, giving SafeStream time to react.
+Internet speed is not the issue. OBS encodes and uploads video frames ~50ms after they appear on screen — faster than any OCR engine can process them. The Stream Delay creates a buffer between your screen and what viewers actually see, giving ScreenCloak time to react.
 
 **Q: I set up Stream Delay — am I 100% safe now?**
 You are significantly safer. V1 limits exposure to the OCR detection window (~200–400ms). For true zero-leak protection, V2 (native plugin) is required. We will announce it when it's ready.

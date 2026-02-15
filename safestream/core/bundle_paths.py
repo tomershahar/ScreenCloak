@@ -26,13 +26,13 @@ def get_paths() -> AppPaths:
         base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
 
         if sys.platform == "win32":
-            # Windows: use %APPDATA%\SafeStream
+            # Windows: use %APPDATA%\ScreenCloak
             appdata = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
             win_tess = Path("C:/Program Files/Tesseract-OCR/tesseract.exe")
             win_tessdata = Path("C:/Program Files/Tesseract-OCR/tessdata")
             return AppPaths(
-                config_dir=appdata / "SafeStream",
-                log_dir=appdata / "SafeStream" / "logs",
+                config_dir=appdata / "ScreenCloak",
+                log_dir=appdata / "ScreenCloak" / "logs",
                 data_dir=base / "data",
                 tesseract_cmd=win_tess if win_tess.exists() else None,
                 tessdata_prefix=win_tessdata if win_tessdata.exists() else None,
@@ -41,8 +41,8 @@ def get_paths() -> AppPaths:
             # macOS: use system Homebrew Tesseract
             system_tess = Path("/opt/homebrew/bin/tesseract")
             return AppPaths(
-                config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
-                log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
+                config_dir=Path.home() / "Library" / "Application Support" / "ScreenCloak",
+                log_dir=Path.home() / "Library" / "Logs" / "ScreenCloak",
                 data_dir=base / "data",
                 tesseract_cmd=system_tess if system_tess.exists() else None,
                 tessdata_prefix=base / "tessdata",
@@ -76,7 +76,7 @@ def setup() -> AppPaths:
         except ImportError:
             if getattr(sys, "frozen", False):
                 raise RuntimeError(
-                    "pytesseract is missing from the SafeStream bundle. "
+                    "pytesseract is missing from the ScreenCloak bundle. "
                     "Re-run PyInstaller with pytesseract in hiddenimports."
                 ) from None
             # dev mode: pytesseract may not be installed, that's acceptable

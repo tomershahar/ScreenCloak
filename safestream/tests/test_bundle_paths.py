@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 
 def test_dev_mode_config_dir():
-    """In dev mode (not frozen), config_dir is the repo root (safestream/)."""
+    """In dev mode (not frozen), config_dir is the repo root (screencloak/)."""
     with patch.object(sys, 'frozen', False, create=True):
         from core import bundle_paths
         import importlib
@@ -45,7 +45,7 @@ def test_dev_mode_tessdata_prefix_is_none():
 
 
 def test_bundle_mode_config_dir():
-    """In bundle mode (frozen), config_dir is ~/Library/Application Support/SafeStream."""
+    """In bundle mode (frozen), config_dir is ~/Library/Application Support/ScreenCloak."""
     fake_meipass = "/tmp/fake_bundle"
     with patch.object(sys, 'frozen', True, create=True), \
          patch.object(sys, '_MEIPASS', fake_meipass, create=True):
@@ -53,7 +53,7 @@ def test_bundle_mode_config_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        expected = Path.home() / "Library" / "Application Support" / "SafeStream"
+        expected = Path.home() / "Library" / "Application Support" / "ScreenCloak"
         assert paths.config_dir == expected
 
 
@@ -145,7 +145,7 @@ def test_setup_bundle_mode_sets_tessdata_prefix(tmp_path):
 
 
 def test_windows_bundle_mode_config_dir():
-    """In Windows bundle mode, config_dir is %APPDATA%\\SafeStream."""
+    """In Windows bundle mode, config_dir is %APPDATA%\\ScreenCloak."""
     import os
     fake_meipass = "/tmp/fake_bundle"
     fake_appdata = "/tmp/fake_appdata"
@@ -157,11 +157,11 @@ def test_windows_bundle_mode_config_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        assert paths.config_dir == Path(fake_appdata) / "SafeStream"
+        assert paths.config_dir == Path(fake_appdata) / "ScreenCloak"
 
 
 def test_windows_bundle_mode_log_dir():
-    """In Windows bundle mode, log_dir is %APPDATA%\\SafeStream\\logs."""
+    """In Windows bundle mode, log_dir is %APPDATA%\\ScreenCloak\\logs."""
     import os
     fake_meipass = "/tmp/fake_bundle"
     fake_appdata = "/tmp/fake_appdata"
@@ -173,4 +173,4 @@ def test_windows_bundle_mode_log_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        assert paths.log_dir == Path(fake_appdata) / "SafeStream" / "logs"
+        assert paths.log_dir == Path(fake_appdata) / "ScreenCloak" / "logs"

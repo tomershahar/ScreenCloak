@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Benchmark OCR engines for SafeStream.
+Benchmark OCR engines for ScreenCloak.
 
 Tests PaddleOCR performance on various scenarios:
 - Seed phrases (12 and 24 words)
@@ -359,7 +359,7 @@ class OCRBenchmark:
 
         if p95 < target_p95:
             print(f"  ✅ PASS - P95 latency ({p95:.0f}ms) < {target_p95}ms target")
-            print("     SafeStream will work with Stream Delay buffer")
+            print("     ScreenCloak will work with Stream Delay buffer")
         else:
             print(f"  ⚠️  MARGINAL - P95 latency ({p95:.0f}ms) >= {target_p95}ms target")
             print("     May need to increase Stream Delay or optimize settings")
@@ -385,7 +385,7 @@ class OCRBenchmark:
         report_path = self.output_dir / filename
 
         with open(report_path, "w") as f:
-            f.write("# SafeStream OCR Benchmark Report\n\n")
+            f.write("# ScreenCloak OCR Benchmark Report\n\n")
             f.write(f"**Hardware:** {self._get_hardware_info()}\n")
             f.write(f"**GPU:** {'Yes (MPS)' if MPS_AVAILABLE else 'No (CPU only)'}\n\n")
 
@@ -434,7 +434,7 @@ class OCRBenchmark:
 
 def main() -> None:
     """Run OCR benchmark."""
-    print("SafeStream OCR Benchmark")
+    print("ScreenCloak OCR Benchmark")
     print("=" * 60)
 
     # Check dependencies

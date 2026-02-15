@@ -12,7 +12,7 @@
 
 ## Working directory
 
-All commands run from `/Users/tomershahar/SafeSense/safestream/` unless stated otherwise.
+All commands run from `/Users/tomershahar/SafeSense/screencloak/` unless stated otherwise.
 
 ---
 
@@ -83,7 +83,7 @@ class TestAPIKeyDetector:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_detector.py::TestAPIKeyDetector -v
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_detector.py::TestAPIKeyDetector -v
 ```
 Expected: `FAILED` — `assert len(results) == 1` fails (stub returns `[]`).
 
@@ -190,14 +190,14 @@ class APIKeysDetector(BaseDetector):
 **Step 5: Run tests to verify they pass**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_detector.py -v -q
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_detector.py -v -q
 ```
 Expected: all tests pass including the 4 new `TestAPIKeyDetector` tests.
 
 **Step 6: Commit**
 
 ```bash
-git -C /Users/tomershahar/SafeSense add safestream/detectors/api_keys.py safestream/config.yaml safestream/tests/test_detector.py
+git -C /Users/tomershahar/SafeSense add screencloak/detectors/api_keys.py screencloak/config.yaml screencloak/tests/test_detector.py
 git -C /Users/tomershahar/SafeSense commit -m "feat: implement API key detection for 14 services"
 ```
 
@@ -299,14 +299,14 @@ def test_no_tray_when_pystray_unavailable() -> None:
 **Step 3: Run tests to verify they fail**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_tray.py -v
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_tray.py -v
 ```
 Expected: `ModuleNotFoundError` or `ImportError` — `ui/tray.py` doesn't exist yet.
 
 **Step 4: Implement `ui/tray.py`**
 
 ```python
-"""System tray / menu bar icon for SafeStream (macOS + Windows via pystray)."""
+"""System tray / menu bar icon for ScreenCloak (macOS + Windows via pystray)."""
 from __future__ import annotations
 
 import threading
@@ -387,7 +387,7 @@ class SystemTray:
             return
 
         menu = pystray.Menu(
-            pystray.MenuItem("SafeStream", None, enabled=False),
+            pystray.MenuItem("ScreenCloak", None, enabled=False),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem(
                 lambda item: "⏸  Pause" if not self._paused else "▶  Resume",
@@ -402,9 +402,9 @@ class SystemTray:
             pystray.MenuItem("Quit", self._quit),
         )
         self._icon = pystray.Icon(
-            "SafeStream",
+            "ScreenCloak",
             icon=_make_icon("idle"),
-            title="SafeStream",
+            title="ScreenCloak",
             menu=menu,
         )
         self._thread = threading.Thread(target=self._icon.run, daemon=True, name="tray")
@@ -434,14 +434,14 @@ class SystemTray:
 **Step 5: Run tests to verify they pass**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_tray.py -v
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_tray.py -v
 ```
 Expected: 5 PASSED.
 
 **Step 6: Commit**
 
 ```bash
-git -C /Users/tomershahar/SafeSense add safestream/ui/tray.py safestream/tests/test_tray.py
+git -C /Users/tomershahar/SafeSense add screencloak/ui/tray.py screencloak/tests/test_tray.py
 git -C /Users/tomershahar/SafeSense commit -m "feat: add system tray icon module (pystray, macOS + Windows)"
 ```
 
@@ -451,12 +451,12 @@ git -C /Users/tomershahar/SafeSense commit -m "feat: add system tray icon module
 
 **Files:**
 - Modify: `main.py`
-- Modify: `SafeStream.spec` (add pystray to hiddenimports)
+- Modify: `ScreenCloak.spec` (add pystray to hiddenimports)
 - Modify: `requirements.txt` (add pystray)
 
 #### Context
 
-`SafeStream` class in `main.py` has a `setup()` method that initialises components, and a `run()` method with the scan loop (`while self._running`). The scan loop calls `self._handle_detections(scan_result)` when something is found.
+`ScreenCloak` class in `main.py` has a `setup()` method that initialises components, and a `run()` method with the scan loop (`while self._running`). The scan loop calls `self._handle_detections(scan_result)` when something is found.
 
 A `--no-tray` flag needs to be added so the app can run headlessly (tests, CI, servers).
 
@@ -472,14 +472,14 @@ parser.add_argument(
 )
 ```
 
-**Step 2: Add tray to `SafeStream.__init__`**
+**Step 2: Add tray to `ScreenCloak.__init__`**
 
-In `SafeStream.__init__`, add:
+In `ScreenCloak.__init__`, add:
 ```python
 self._tray: Any = None
 ```
 
-**Step 3: Add tray initialisation to `SafeStream.setup()`**
+**Step 3: Add tray initialisation to `ScreenCloak.setup()`**
 
 At the END of `setup()`, after all other components are initialised, add:
 
@@ -528,7 +528,7 @@ if self._tray is not None:
 
 **Step 7: Stop tray in `shutdown()`**
 
-In `SafeStream.shutdown()`, add:
+In `ScreenCloak.shutdown()`, add:
 
 ```python
 if self._tray is not None:
@@ -542,9 +542,9 @@ Add this line to `requirements.txt`:
 pystray>=0.19.0
 ```
 
-**Step 9: Add pystray to `SafeStream.spec` hiddenimports**
+**Step 9: Add pystray to `ScreenCloak.spec` hiddenimports**
 
-In `SafeStream.spec`, add to the `hiddenimports` list:
+In `ScreenCloak.spec`, add to the `hiddenimports` list:
 ```python
 "pystray",
 "pystray._darwin",
@@ -553,21 +553,21 @@ In `SafeStream.spec`, add to the `hiddenimports` list:
 **Step 10: Run full test suite**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/ --ignore=tests/benchmark.py -q
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/ --ignore=tests/benchmark.py -q
 ```
 Expected: all tests pass (76+ passed, 0 failed).
 
 **Step 11: Quick smoke test**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && timeout 5 python3 main.py --no-obs --verbose --once 2>&1 || true
+cd /Users/tomershahar/SafeSense/screencloak && timeout 5 python3 main.py --no-obs --verbose --once 2>&1 || true
 ```
 Expected: starts cleanly, logs "System tray icon started" (or skips if `--no-tray`), exits after one frame.
 
 **Step 12: Commit**
 
 ```bash
-git -C /Users/tomershahar/SafeSense add safestream/main.py safestream/SafeStream.spec safestream/requirements.txt
+git -C /Users/tomershahar/SafeSense add screencloak/main.py screencloak/ScreenCloak.spec screencloak/requirements.txt
 git -C /Users/tomershahar/SafeSense commit -m "feat: integrate system tray icon into main scan loop"
 ```
 
@@ -581,7 +581,7 @@ git -C /Users/tomershahar/SafeSense commit -m "feat: integrate system tray icon 
 
 #### Context
 
-`bundle_paths.py` currently only handles macOS frozen paths (hardcoded `/opt/homebrew/bin/tesseract` and `~/Library/...`). On Windows, paths must use `%APPDATA%\SafeStream\` and the UB-Mannheim Tesseract default install path `C:\Program Files\Tesseract-OCR\`.
+`bundle_paths.py` currently only handles macOS frozen paths (hardcoded `/opt/homebrew/bin/tesseract` and `~/Library/...`). On Windows, paths must use `%APPDATA%\ScreenCloak\` and the UB-Mannheim Tesseract default install path `C:\Program Files\Tesseract-OCR\`.
 
 **Step 1: Write the failing tests**
 
@@ -589,7 +589,7 @@ Add to `tests/test_bundle_paths.py`:
 
 ```python
 def test_windows_bundle_mode_config_dir():
-    """In Windows bundle mode, config_dir is %APPDATA%\SafeStream."""
+    """In Windows bundle mode, config_dir is %APPDATA%\ScreenCloak."""
     import os
     fake_meipass = "/tmp/fake_bundle"
     fake_appdata = "/tmp/fake_appdata"
@@ -601,11 +601,11 @@ def test_windows_bundle_mode_config_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        assert paths.config_dir == Path(fake_appdata) / "SafeStream"
+        assert paths.config_dir == Path(fake_appdata) / "ScreenCloak"
 
 
 def test_windows_bundle_mode_log_dir():
-    """In Windows bundle mode, log_dir is %APPDATA%\SafeStream\logs."""
+    """In Windows bundle mode, log_dir is %APPDATA%\ScreenCloak\logs."""
     import os
     fake_meipass = "/tmp/fake_bundle"
     fake_appdata = "/tmp/fake_appdata"
@@ -617,13 +617,13 @@ def test_windows_bundle_mode_log_dir():
         import importlib
         importlib.reload(bundle_paths)
         paths = bundle_paths.get_paths()
-        assert paths.log_dir == Path(fake_appdata) / "SafeStream" / "logs"
+        assert paths.log_dir == Path(fake_appdata) / "ScreenCloak" / "logs"
 ```
 
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_bundle_paths.py::test_windows_bundle_mode_config_dir tests/test_bundle_paths.py::test_windows_bundle_mode_log_dir -v
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_bundle_paths.py::test_windows_bundle_mode_config_dir tests/test_bundle_paths.py::test_windows_bundle_mode_log_dir -v
 ```
 Expected: FAIL — current code always returns macOS paths.
 
@@ -638,13 +638,13 @@ def get_paths() -> AppPaths:
         base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
 
         if sys.platform == "win32":
-            # Windows: use %APPDATA%\SafeStream
+            # Windows: use %APPDATA%\ScreenCloak
             appdata = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
             win_tess = Path("C:/Program Files/Tesseract-OCR/tesseract.exe")
             win_tessdata = Path("C:/Program Files/Tesseract-OCR/tessdata")
             return AppPaths(
-                config_dir=appdata / "SafeStream",
-                log_dir=appdata / "SafeStream" / "logs",
+                config_dir=appdata / "ScreenCloak",
+                log_dir=appdata / "ScreenCloak" / "logs",
                 data_dir=base / "data",
                 tesseract_cmd=win_tess if win_tess.exists() else None,
                 tessdata_prefix=win_tessdata if win_tessdata.exists() else None,
@@ -653,8 +653,8 @@ def get_paths() -> AppPaths:
             # macOS: use system Homebrew Tesseract
             system_tess = Path("/opt/homebrew/bin/tesseract")
             return AppPaths(
-                config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
-                log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
+                config_dir=Path.home() / "Library" / "Application Support" / "ScreenCloak",
+                log_dir=Path.home() / "Library" / "Logs" / "ScreenCloak",
                 data_dir=base / "data",
                 tesseract_cmd=system_tess if system_tess.exists() else None,
                 tessdata_prefix=base / "tessdata",
@@ -674,14 +674,14 @@ def get_paths() -> AppPaths:
 **Step 4: Run all bundle_paths tests**
 
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python -m pytest tests/test_bundle_paths.py -v
+cd /Users/tomershahar/SafeSense/screencloak && python -m pytest tests/test_bundle_paths.py -v
 ```
 Expected: all 11 tests pass.
 
 **Step 5: Commit**
 
 ```bash
-git -C /Users/tomershahar/SafeSense add safestream/core/bundle_paths.py safestream/tests/test_bundle_paths.py
+git -C /Users/tomershahar/SafeSense add screencloak/core/bundle_paths.py screencloak/tests/test_bundle_paths.py
 git -C /Users/tomershahar/SafeSense commit -m "feat: add Windows path support to bundle_paths"
 ```
 
@@ -690,8 +690,8 @@ git -C /Users/tomershahar/SafeSense commit -m "feat: add Windows path support to
 ### Task 5: Windows Packaging Files
 
 **Files:**
-- Create: `SafeStream-Windows.spec`
-- Create: `scripts/safestream.iss`
+- Create: `ScreenCloak-Windows.spec`
+- Create: `scripts/screencloak.iss`
 - Create: `scripts/build_windows.bat`
 
 #### Context
@@ -700,10 +700,10 @@ These files are used on a **Windows machine** to build the installer. They canno
 
 Inno Setup 6 must be installed on the Windows build machine: https://jrsoftware.org/isdl.php
 
-**Step 1: Create `SafeStream-Windows.spec`**
+**Step 1: Create `ScreenCloak-Windows.spec`**
 
 ```python
-# SafeStream-Windows.spec — PyInstaller config for Windows builds
+# ScreenCloak-Windows.spec — PyInstaller config for Windows builds
 # -*- mode: python ; coding: utf-8 -*-
 
 # NOTE: Tesseract is NOT bundled. Users must install separately from:
@@ -764,7 +764,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="SafeStream",
+    name="ScreenCloak",
     debug=False,
     strip=False,
     upx=False,
@@ -779,39 +779,39 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=False,
-    name="SafeStream",
+    name="ScreenCloak",
 )
 ```
 
-**Step 2: Create `scripts/safestream.iss`**
+**Step 2: Create `scripts/screencloak.iss`**
 
 ```ini
-; Inno Setup 6 script for SafeStream Windows installer
+; Inno Setup 6 script for ScreenCloak Windows installer
 [Setup]
-AppName=SafeStream
+AppName=ScreenCloak
 AppVersion=1.0.0
-AppPublisher=SafeStream
-DefaultDirName={autopf}\SafeStream
-DefaultGroupName=SafeStream
+AppPublisher=ScreenCloak
+DefaultDirName={autopf}\ScreenCloak
+DefaultGroupName=ScreenCloak
 OutputDir=dist
-OutputBaseFilename=SafeStream-1.0.0-Setup
+OutputBaseFilename=ScreenCloak-1.0.0-Setup
 Compression=lzma
 SolidCompression=yes
 ; No code signing — user must right-click > Run anyway on first launch
 ; (or run from PowerShell to bypass SmartScreen)
 
 [Files]
-Source: "dist\SafeStream\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\ScreenCloak\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\SafeStream"; Filename: "{app}\SafeStream.exe"
-Name: "{commondesktop}\SafeStream"; Filename: "{app}\SafeStream.exe"; Tasks: desktopicon
+Name: "{group}\ScreenCloak"; Filename: "{app}\ScreenCloak.exe"
+Name: "{commondesktop}\ScreenCloak"; Filename: "{app}\ScreenCloak.exe"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional icons:"
 
 [Run]
-Filename: "{app}\SafeStream.exe"; Description: "Launch SafeStream now"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\ScreenCloak.exe"; Description: "Launch ScreenCloak now"; Flags: nowait postinstall skipifsilent
 
 [Code]
 // Check that Tesseract is installed before completing setup
@@ -824,7 +824,7 @@ begin
   begin
     MsgBox(
       'Tesseract OCR is not installed.' + #13#10 + #13#10 +
-      'Please install Tesseract before running SafeStream:' + #13#10 +
+      'Please install Tesseract before running ScreenCloak:' + #13#10 +
       'https://github.com/UB-Mannheim/tesseract/wiki' + #13#10 + #13#10 +
       'After installing Tesseract, run this installer again.',
       mbInformation, MB_OK
@@ -842,10 +842,10 @@ end;
 setlocal enabledelayedexpansion
 
 set VERSION=1.0.0
-set APP_NAME=SafeStream
+set APP_NAME=ScreenCloak
 set ISCC="%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe"
 
-echo === SafeStream Windows Build ===
+echo === ScreenCloak Windows Build ===
 echo Version: %VERSION%
 echo.
 
@@ -854,7 +854,7 @@ if exist build rmdir /s /q build
 if exist "dist\%APP_NAME%" rmdir /s /q "dist\%APP_NAME%"
 
 echo ^> Running PyInstaller...
-python -m PyInstaller SafeStream-Windows.spec --clean --noconfirm
+python -m PyInstaller ScreenCloak-Windows.spec --clean --noconfirm
 if errorlevel 1 (
     echo ERROR: PyInstaller failed
     exit /b 1
@@ -867,7 +867,7 @@ if not exist %ISCC% (
     echo Install from: https://jrsoftware.org/isdl.php
     exit /b 1
 )
-%ISCC% scripts\safestream.iss
+%ISCC% scripts\screencloak.iss
 if errorlevel 1 (
     echo ERROR: Inno Setup failed
     exit /b 1
@@ -884,18 +884,18 @@ Check the `.bat` and `.iss` files are well-formed by inspecting them.
 
 The `.spec` can be syntax-checked:
 ```bash
-cd /Users/tomershahar/SafeSense/safestream && python3 -c "
-with open('SafeStream-Windows.spec') as f:
-    compile(f.read(), 'SafeStream-Windows.spec', 'exec')
-print('SafeStream-Windows.spec syntax OK')
+cd /Users/tomershahar/SafeSense/screencloak && python3 -c "
+with open('ScreenCloak-Windows.spec') as f:
+    compile(f.read(), 'ScreenCloak-Windows.spec', 'exec')
+print('ScreenCloak-Windows.spec syntax OK')
 "
 ```
-Expected: `SafeStream-Windows.spec syntax OK`
+Expected: `ScreenCloak-Windows.spec syntax OK`
 
 **Step 5: Commit**
 
 ```bash
-git -C /Users/tomershahar/SafeSense add safestream/SafeStream-Windows.spec safestream/scripts/safestream.iss safestream/scripts/build_windows.bat
+git -C /Users/tomershahar/SafeSense add screencloak/ScreenCloak-Windows.spec screencloak/scripts/screencloak.iss screencloak/scripts/build_windows.bat
 git -C /Users/tomershahar/SafeSense commit -m "feat: add Windows packaging (PyInstaller spec + Inno Setup installer)"
 ```
 
@@ -911,12 +911,12 @@ git -C /Users/tomershahar/SafeSense commit -m "feat: add Windows packaging (PyIn
 | Create | `ui/tray.py` |
 | Create | `tests/test_tray.py` |
 | Modify | `main.py` |
-| Modify | `SafeStream.spec` |
+| Modify | `ScreenCloak.spec` |
 | Modify | `requirements.txt` |
 | Modify | `core/bundle_paths.py` |
 | Modify | `tests/test_bundle_paths.py` |
-| Create | `SafeStream-Windows.spec` |
-| Create | `scripts/safestream.iss` |
+| Create | `ScreenCloak-Windows.spec` |
+| Create | `scripts/screencloak.iss` |
 | Create | `scripts/build_windows.bat` |
 
 ## Windows Build Instructions (for later, on a Windows machine)
@@ -924,6 +924,6 @@ git -C /Users/tomershahar/SafeSense commit -m "feat: add Windows packaging (PyIn
 1. Install Python 3.11+ and run `pip install -r requirements.txt`
 2. Install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki (default path)
 3. Install Inno Setup 6 from https://jrsoftware.org/isdl.php
-4. Clone the repo and `cd safestream`
+4. Clone the repo and `cd screencloak`
 5. Run: `scripts\build_windows.bat`
-6. Distribute: `dist\SafeStream-1.0.0-Setup.exe`
+6. Distribute: `dist\ScreenCloak-1.0.0-Setup.exe`

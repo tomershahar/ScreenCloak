@@ -1,4 +1,4 @@
-"""SafeStream — real-time sensitive data detection for live streamers."""
+"""ScreenCloak — real-time sensitive data detection for live streamers."""
 
 from __future__ import annotations
 
@@ -19,9 +19,9 @@ from typing import Any
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="safestream",
+        prog="screencloak",
         description=(
-            "SafeStream — detects sensitive data on screen and switches OBS "
+            "ScreenCloak — detects sensitive data on screen and switches OBS "
             "to a Privacy Mode scene before it reaches viewers."
         ),
     )
@@ -70,7 +70,7 @@ def _build_parser() -> argparse.ArgumentParser:
 # ---------------------------------------------------------------------------
 
 
-class SafeStream:
+class ScreenCloak:
     """
     Main application — wires all components together and runs the scan loop.
 
@@ -130,7 +130,7 @@ class SafeStream:
 
         level = logging.DEBUG if self.args.verbose else logging.INFO
         self._logger = setup_logging(level=level)
-        self._logger.info("SafeStream starting up")
+        self._logger.info("ScreenCloak starting up")
         self._logger.info(f"Config: {self.args.config}")
 
         # 3. Capture
@@ -369,7 +369,7 @@ class SafeStream:
                 pass
 
         if self._logger:
-            self._logger.info("SafeStream shut down cleanly")
+            self._logger.info("ScreenCloak shut down cleanly")
 
 
 # ---------------------------------------------------------------------------
@@ -387,7 +387,7 @@ def main() -> int:
     if args.config is None:
         args.config = str(_PATHS.config_dir / "config.yaml")
 
-    app = SafeStream(args)
+    app = ScreenCloak(args)
 
     # Graceful shutdown on SIGINT / SIGTERM
     def _signal_handler(sig: int, _frame: Any) -> None:
@@ -404,7 +404,7 @@ def main() -> int:
     try:
         app.setup()
     except Exception as e:
-        print(f"[SafeStream] Startup failed: {e}", file=sys.stderr)
+        print(f"[ScreenCloak] Startup failed: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
             traceback.print_exc()
