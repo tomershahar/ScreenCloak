@@ -1,0 +1,66 @@
+name: Feature Request
+description: Suggest a new detection pattern or feature
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for ScreenCloak? We especially want to hear about:
+        - Sensitive data types we don't detect yet
+        - Apps or workflows where detection doesn't work well
+        - UX improvements for the tray icon or config
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: What type of feature is this?
+      options:
+        - New detection category (e.g. passwords, SSH keys, phone numbers)
+        - New API key service to detect
+        - Performance improvement
+        - OBS integration improvement
+        - System tray / UI improvement
+        - Configuration option
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the scenario. What data could be leaked, and how?
+      placeholder: "e.g. I stream coding sessions and sometimes my SSH private keys are visible in the terminal. ScreenCloak doesn't detect them."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? Be as specific as you can.
+      placeholder: "e.g. Detect lines starting with '-----BEGIN' as private keys, confidence 0.95, action blur."
+    validations:
+      required: false
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example data (fake/redacted only)
+      description: |
+        If you're requesting a new detection pattern, paste an EXAMPLE of what the data looks like.
+        Use fake data only — never paste real keys, addresses, or personal info.
+      placeholder: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEA0Z3VS5JJcds3xHn...
+        -----END RSA PRIVATE KEY-----
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other details, links, or screenshots that would help.
+    validations:
+      required: false

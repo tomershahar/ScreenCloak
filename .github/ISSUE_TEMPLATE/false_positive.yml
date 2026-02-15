@@ -1,0 +1,79 @@
+name: False Positive Report
+description: ScreenCloak triggered on content that isn't sensitive
+labels: ["false-positive"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A false positive is when ScreenCloak switches to Privacy Mode on content that doesn't need protecting.
+        These reports directly improve detection accuracy — thank you for taking the time to file one.
+
+  - type: dropdown
+    id: detection_type
+    attributes:
+      label: Which detector triggered?
+      options:
+        - Seed phrase
+        - Credit card
+        - Crypto address (BTC/ETH/SOL)
+        - API key
+        - Personal strings
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: What was on screen?
+      description: |
+        Describe the content that triggered the false positive. If it's text, paste it here.
+        Do NOT paste real sensitive data — describe it or use a redacted version.
+      placeholder: "e.g. A table of random hex values in a tutorial. The string '0x1a2b3c...' was flagged as an ETH address."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: app
+    attributes:
+      label: App / context where this appeared
+      options:
+        - Terminal / command line
+        - Browser
+        - IDE (VS Code, etc.)
+        - PDF / document
+        - Game
+        - Other
+    validations:
+      required: false
+
+  - type: input
+    id: confidence
+    attributes:
+      label: Confidence score shown in logs
+      description: Check logs/detections.log for the confidence value
+      placeholder: "e.g. 0.85"
+    validations:
+      required: false
+
+  - type: textarea
+    id: log_line
+    attributes:
+      label: Log line (optional)
+      description: Paste the relevant line from logs/detections.log
+      render: text
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Windows 11
+        - Windows 10
+        - Other
+    validations:
+      required: false

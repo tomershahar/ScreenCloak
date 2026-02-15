@@ -1,0 +1,82 @@
+name: Bug Report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill out as much as you can — it helps us fix things faster.
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Windows 11
+        - Windows 10
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version
+      placeholder: "e.g. 3.11.4"
+    validations:
+      required: true
+
+  - type: input
+    id: tesseract_version
+    attributes:
+      label: Tesseract version
+      placeholder: "Run: tesseract --version"
+    validations:
+      required: false
+
+  - type: input
+    id: obs_version
+    attributes:
+      label: OBS Studio version
+      placeholder: "e.g. 30.1.2"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly. What did you expect vs what actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `python main.py --mock ...`
+        2. ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste output from the terminal or `logs/detections.log`. Remove any real sensitive data before pasting.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant config.yaml settings
+      description: Paste the detection section of your config (replace personal strings with placeholders).
+      render: yaml
+    validations:
+      required: false
