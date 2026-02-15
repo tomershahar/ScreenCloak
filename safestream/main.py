@@ -102,6 +102,7 @@ class SafeStream:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
         self._running = False
+        self._shutdown_called: bool = False
 
         # Deferred — initialised in setup()
         self._config: Any = None
@@ -190,10 +191,14 @@ class SafeStream:
 
         # 8. System tray (optional)
         if not getattr(self.args, "no_tray", False):
-            from ui.tray import SystemTray  # noqa: PLC0415
-            self._tray = SystemTray(on_quit=self.shutdown)
-            self._tray.start()
-            self._logger.info("System tray icon started")
+            try:
+                from ui.tray import SystemTray  # noqa: PLC0415
+                self._tray = SystemTray(on_quit=self.shutdown)
+                self._tray.start()
+                self._logger.info("System tray icon started")
+            except Exception as e:
+                self._logger.warning(f"System tray unavailable: {e} — continuing without tray")
+                self._tray = None
 
     def run(self) -> int:
         """
@@ -343,6 +348,9 @@ class SafeStream:
 
     def shutdown(self) -> None:
         """Cleanly stop the scan loop and release all resources."""
+        if self._shutdown_called:
+            return
+        self._shutdown_called = True
         self._running = False
 
         if self._tray is not None:
