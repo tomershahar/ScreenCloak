@@ -1,6 +1,7 @@
 # Build artifacts — never commit
 safestream/dist/
 safestream/build/
+*.egg-info/
 
 # Python
 __pycache__/
@@ -8,10 +9,16 @@ __pycache__/
 *.pyo
 .pytest_cache/
 .coverage
-*.egg-info/
 
-# macOS
-.DS_Store
+# Secrets — never commit
+.env
+*.key
+*.pem
+config.local.yaml
 
 # Logs
 safestream/logs/
+*.log
+
+# macOS
+.DS_Store
