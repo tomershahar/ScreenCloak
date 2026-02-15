@@ -1,0 +1,17 @@
+# Build artifacts — never commit
+safestream/dist/
+safestream/build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Logs
+safestream/logs/
