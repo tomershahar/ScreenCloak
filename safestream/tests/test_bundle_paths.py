@@ -142,3 +142,35 @@ def test_setup_bundle_mode_sets_tessdata_prefix(tmp_path):
             os.environ["TESSDATA_PREFIX"] = original_tessdata
         else:
             os.environ.pop("TESSDATA_PREFIX", None)
+
+
+def test_windows_bundle_mode_config_dir():
+    """In Windows bundle mode, config_dir is %APPDATA%\\SafeStream."""
+    import os
+    fake_meipass = "/tmp/fake_bundle"
+    fake_appdata = "/tmp/fake_appdata"
+    with patch.object(sys, 'frozen', True, create=True), \
+         patch.object(sys, '_MEIPASS', fake_meipass, create=True), \
+         patch.object(sys, 'platform', 'win32'), \
+         patch.dict(os.environ, {"APPDATA": fake_appdata}):
+        from core import bundle_paths
+        import importlib
+        importlib.reload(bundle_paths)
+        paths = bundle_paths.get_paths()
+        assert paths.config_dir == Path(fake_appdata) / "SafeStream"
+
+
+def test_windows_bundle_mode_log_dir():
+    """In Windows bundle mode, log_dir is %APPDATA%\\SafeStream\\logs."""
+    import os
+    fake_meipass = "/tmp/fake_bundle"
+    fake_appdata = "/tmp/fake_appdata"
+    with patch.object(sys, 'frozen', True, create=True), \
+         patch.object(sys, '_MEIPASS', fake_meipass, create=True), \
+         patch.object(sys, 'platform', 'win32'), \
+         patch.dict(os.environ, {"APPDATA": fake_appdata}):
+        from core import bundle_paths
+        import importlib
+        importlib.reload(bundle_paths)
+        paths = bundle_paths.get_paths()
+        assert paths.log_dir == Path(fake_appdata) / "SafeStream" / "logs"

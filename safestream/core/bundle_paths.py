@@ -23,20 +23,30 @@ class AppPaths:
 def get_paths() -> AppPaths:
     """Return resolved paths for the current runtime environment."""
     if getattr(sys, "frozen", False):
-        # Running inside PyInstaller .app bundle.
-        # We do NOT bundle the Tesseract binary because it conflicts with cv2's
-        # bundled libtesseract.5.dylib (SIGABRT on symbol mismatch).
-        # Instead point pytesseract at the system Homebrew Tesseract.
         base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
-        # Use bundled tessdata but system Tesseract binary
-        system_tess = Path("/opt/homebrew/bin/tesseract")
-        return AppPaths(
-            config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
-            log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
-            data_dir=base / "data",
-            tesseract_cmd=system_tess if system_tess.exists() else None,
-            tessdata_prefix=base / "tessdata",
-        )
+
+        if sys.platform == "win32":
+            # Windows: use %APPDATA%\SafeStream
+            appdata = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
+            win_tess = Path("C:/Program Files/Tesseract-OCR/tesseract.exe")
+            win_tessdata = Path("C:/Program Files/Tesseract-OCR/tessdata")
+            return AppPaths(
+                config_dir=appdata / "SafeStream",
+                log_dir=appdata / "SafeStream" / "logs",
+                data_dir=base / "data",
+                tesseract_cmd=win_tess if win_tess.exists() else None,
+                tessdata_prefix=win_tessdata if win_tessdata.exists() else None,
+            )
+        else:
+            # macOS: use system Homebrew Tesseract
+            system_tess = Path("/opt/homebrew/bin/tesseract")
+            return AppPaths(
+                config_dir=Path.home() / "Library" / "Application Support" / "SafeStream",
+                log_dir=Path.home() / "Library" / "Logs" / "SafeStream",
+                data_dir=base / "data",
+                tesseract_cmd=system_tess if system_tess.exists() else None,
+                tessdata_prefix=base / "tessdata",
+            )
     else:
         # Dev mode — use repo directory
         repo = Path(__file__).parent.parent
@@ -44,8 +54,8 @@ def get_paths() -> AppPaths:
             config_dir=repo,
             log_dir=repo / "logs",
             data_dir=repo / "data",
-            tesseract_cmd=None,     # use system Tesseract from PATH
-            tessdata_prefix=None,   # use system tessdata
+            tesseract_cmd=None,
+            tessdata_prefix=None,
         )
 
 
