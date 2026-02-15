@@ -13,8 +13,8 @@ SafeStream watches your screen while you stream and automatically switches OBS t
 | Crypto seed phrases | 12/24-word BIP-39 phrases | Free |
 | Credit card numbers | Visa, Mastercard, Amex (with Luhn validation) | Free |
 | Crypto wallet addresses | BTC (legacy + bech32), ETH, SOL | Free |
+| API keys | AWS, GitHub, Stripe, OpenAI, Anthropic, Google, Slack, and 8 more (14 services total) | Free |
 | Personal strings | Your name, email, phone, address | Free (3 max) |
-| API keys | AWS, Stripe, GitHub tokens | Coming soon |
 
 ---
 
@@ -88,7 +88,7 @@ V1 uses a Python sidecar with OBS WebSocket. V2 will be a **native OBS plugin wr
 
 - Python 3.11+
 - OBS Studio 28+ with WebSocket plugin enabled
-- macOS (Apple Silicon recommended), Windows, or Linux
+- macOS (Apple Silicon recommended) or Windows
 
 ### Step 1: Clone and Install
 
@@ -98,19 +98,38 @@ cd safestream
 pip install -r requirements.txt
 ```
 
-### Step 2: Install Tesseract (fallback OCR)
+### Step 2: Install Tesseract (OCR engine)
 
 **macOS:**
 ```bash
 brew install tesseract
 ```
 
-**Windows:** Download from https://github.com/UB-Mannheim/tesseract/wiki
+**Windows:** Download and run the UB-Mannheim installer (use the default install path):
+`https://github.com/UB-Mannheim/tesseract/wiki`
 
-**Linux:**
-```bash
-sudo apt install tesseract-ocr
+> SafeStream expects Tesseract at `C:\Program Files\Tesseract-OCR\tesseract.exe`. If you installed it elsewhere, set `TESSDATA_PREFIX` and the path in `config.yaml`.
+
+---
+
+### Windows Packaged Installer (alternative to Python setup)
+
+If you prefer not to install Python, download the pre-built Windows installer from the Releases page. It bundles everything except Tesseract (install that first from the link above).
+
+To build the installer yourself on a Windows machine:
+
+```bat
+scripts\build_windows.bat
 ```
+
+Requires:
+- Python 3.11+ with `pip install -r requirements.txt`
+- PyInstaller (`pip install pyinstaller`)
+- Inno Setup 6 (`https://jrsoftware.org/isdl.php`)
+
+Output: `dist\SafeStream-1.0.0-Setup.exe`
+
+> **First run on Windows:** Windows SmartScreen may warn "unrecognized app" because the installer is unsigned. Click **More info → Run anyway** to proceed.
 
 ### Step 3: Configure OBS
 
@@ -162,10 +181,42 @@ obs:
 python main.py
 ```
 
+A menu bar icon (macOS) or system tray icon (Windows) will appear. See [System Tray](#system-tray) below.
+
 To test with a sample image (no OBS needed):
 ```bash
 python main.py --mock data/test_images/seed_phrase_12word.png
 ```
+
+To run without the tray icon (headless / server mode):
+```bash
+python main.py --no-tray
+```
+
+---
+
+## System Tray
+
+When SafeStream is running, a small icon appears in your menu bar (macOS) or system tray (Windows):
+
+| Icon colour | Meaning |
+|---|---|
+| Grey | Running normally — no recent detections |
+| Green | Last scan was clean (fades to grey after ~3s) |
+| Red | Detection fired — stays red for 10 seconds |
+
+**Right-click (or click) the icon to open the menu:**
+
+```
+SafeStream
+──────────
+⏸  Pause         ← click to pause/resume scanning
+Detections: 0    ← running count of detections this session
+──────────
+Quit
+```
+
+Use **Pause** when you intentionally display sensitive content (e.g. entering a seed phrase you're testing). SafeStream will skip OCR while paused.
 
 ---
 
