@@ -199,11 +199,19 @@ python main.py --no-tray
 
 When ScreenCloak is running, a small icon appears in your menu bar (macOS) or system tray (Windows):
 
-| Icon colour | Meaning |
-|---|---|
-| Grey | Running normally — no recent detections |
-| Green | Last scan was clean (fades to grey after ~3s) |
-| Red | Detection fired — stays red for 10 seconds |
+| Icon colour | Meaning | OBS action |
+|---|---|---|
+| Grey | Starting up / scanning | None |
+| Green | Screen is clean | None |
+| **Orange** | Low-confidence detection (logged only) | **No scene switch** |
+| **Red** | High-confidence detection | **Switches to Privacy Mode** |
+
+**Orange vs Red — what's the difference?**
+
+- **Orange** means ScreenCloak saw something suspicious but isn't confident enough to interrupt your stream. The detection is logged for review but OBS keeps broadcasting normally. This can happen with partial sequences, ambiguous text, or UI elements that resemble sensitive data (e.g. OBS settings windows).
+- **Red** means ScreenCloak is confident. OBS switches to your Privacy Mode scene immediately, protecting your viewers.
+
+The confidence threshold for each colour is configurable — see [Tuning Sensitivity](#tuning-sensitivity) below.
 
 **Right-click (or click) the icon to open the menu:**
 
@@ -251,6 +259,34 @@ python3 benchmark_ocr.py
 ```
 
 **The lower your P95 latency, the smaller your exposure window.** Apple Silicon with MPS acceleration typically achieves 100–200ms.
+
+---
+
+## Tuning Sensitivity
+
+Edit `config.yaml` to control when ScreenCloak acts:
+
+```yaml
+detection:
+  thresholds:
+    blur: 0.8   # >= this confidence → switch OBS to Privacy Mode (red icon)
+    warn: 0.6   # >= this confidence → log only, no scene switch (orange icon)
+```
+
+**Confidence levels by detector:**
+
+| What's on screen | Confidence | Default action |
+|---|---|---|
+| 12/24-word BIP-39 seed phrase | 0.95 | 🔴 Blur (OBS switches) |
+| Credit card + expiry date | 0.90 | 🔴 Blur (OBS switches) |
+| Credit card alone (no expiry) | 0.80 | 🔴 Blur (OBS switches) |
+| ETH/BTC/SOL wallet address | 0.85–0.95 | 🔴 Blur (OBS switches) |
+| Partial seed phrase (< 12 words) | 0.70 | 🟠 Warn (logged only) |
+| Personal string match | 0.70–0.90 | 🟠/🔴 Depends on confidence |
+
+**To reduce false positives** (if OBS switches too often): raise `blur` to `0.85` or `0.90`.
+
+**To catch more edge cases** (if something slips through): lower `blur` to `0.75`.
 
 ---
 

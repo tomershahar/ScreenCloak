@@ -59,6 +59,14 @@ class PersonalStringsConfig:
 
 
 @dataclass
+class ThresholdsConfig:
+    """Confidence thresholds for action assignment."""
+
+    blur: float = 0.8   # >= blur → switch OBS to Privacy Mode (red icon)
+    warn: float = 0.6   # >= warn → log only, no scene switch (orange icon)
+
+
+@dataclass
 class DetectionConfig:
     """Detection settings."""
 
@@ -67,6 +75,7 @@ class DetectionConfig:
     crypto_addresses: CryptoAddressConfig = field(default_factory=CryptoAddressConfig)
     api_keys: APIKeysConfig = field(default_factory=APIKeysConfig)
     personal_strings: PersonalStringsConfig = field(default_factory=PersonalStringsConfig)
+    thresholds: ThresholdsConfig = field(default_factory=ThresholdsConfig)
 
 
 @dataclass
@@ -205,12 +214,19 @@ class ConfigManager:
             fuzzy_threshold=personal_strings_dict.get("fuzzy_threshold", 85),
         )
 
+        thresholds_dict = detection_dict.get("thresholds", {})
+        thresholds_config = ThresholdsConfig(
+            blur=thresholds_dict.get("blur", 0.8),
+            warn=thresholds_dict.get("warn", 0.6),
+        )
+
         detection_config = DetectionConfig(
             seed_phrases=seed_phrases_config,
             credit_cards=credit_cards_config,
             crypto_addresses=crypto_addresses_config,
             api_keys=api_keys_config,
             personal_strings=personal_strings_config,
+            thresholds=thresholds_config,
         )
 
         # Capture config
@@ -284,6 +300,16 @@ class ConfigManager:
         if not 0 <= config.detection.personal_strings.fuzzy_threshold <= 100:
             raise ValueError("fuzzy_threshold must be between 0 and 100")
 
+        # Validate detection thresholds
+        blur = config.detection.thresholds.blur
+        warn = config.detection.thresholds.warn
+        if not 0.0 < blur <= 1.0:
+            raise ValueError("detection.thresholds.blur must be between 0 and 1")
+        if not 0.0 < warn <= 1.0:
+            raise ValueError("detection.thresholds.warn must be between 0 and 1")
+        if warn >= blur:
+            raise ValueError("detection.thresholds.warn must be less than blur")
+
         # Validate monitor
         if config.capture.monitor < 0:
             raise ValueError("monitor must be >= 0")
@@ -309,6 +335,13 @@ ocr:
 
 # Detection Settings
 detection:
+  # Confidence thresholds — tune these to balance sensitivity vs. false positives
+  # blur: >= this confidence → switch OBS to Privacy Mode (red icon)
+  # warn: >= this confidence → log only, no scene switch (orange icon)
+  thresholds:
+    blur: 0.8   # Default: switch OBS at 80% confidence
+    warn: 0.6   # Default: log-only warning at 60% confidence
+
   seed_phrases:
     enabled: true
     min_word_count: 12  # Require 12 or 24 word sequences

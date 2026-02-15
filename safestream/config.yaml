@@ -8,6 +8,14 @@ ocr:
 
 # Detection Settings
 detection:
+  # Confidence thresholds — tune these to balance sensitivity vs. false positives
+  # blur: >= this confidence → switch OBS to Privacy Mode (red icon)
+  # warn: >= this confidence → log only, no scene switch (orange icon)
+  # Raise blur to reduce false positives; lower it to catch more edge cases.
+  thresholds:
+    blur: 0.8   # Default: switch OBS at 80% confidence
+    warn: 0.6   # Default: log-only warning at 60% confidence
+
   seed_phrases:
     enabled: true
     min_word_count: 12  # Require 12 or 24 word sequences

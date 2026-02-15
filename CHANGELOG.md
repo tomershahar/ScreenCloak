@@ -4,6 +4,19 @@ All notable changes to ScreenCloak are documented here.
 
 ---
 
+## v0.1.1 — 2026-02-15
+
+### Fixed
+- **Credit card false positives from log timestamps** — digit-stream sliding window now applied per OCR token only, never across combined screen text. Timestamps (`2026-02-15 18:28:29`) no longer produce Luhn-valid 16-digit windows.
+- **Standalone CVV detection removed** — port numbers and UI numeric values no longer push credit card confidence to blur level. CVV is now only detected with an explicit `CVV`/`CVC`/`CV2` label.
+- **OBS auto-return loop** — ScreenCloak no longer saves "Privacy Mode" as the return target if OBS was already on that scene at detection time.
+
+### Improved
+- **Tray icon: 4 distinct states** — grey (idle), green (clean), **orange** (warn — logged only, stream unchanged), **red** (blur — OBS switched). Previously warn and blur both showed red, making it impossible to tell if OBS had switched.
+- **Configurable confidence thresholds** — `detection.thresholds.blur` (default 0.8) and `detection.thresholds.warn` (default 0.6) are now editable in `config.yaml`. Raise `blur` to reduce false positives; lower it to catch more edge cases.
+
+---
+
 ## v0.1.0 — Beta Release (2026-02-14)
 
 Initial public beta.

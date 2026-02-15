@@ -123,11 +123,13 @@ class DetectorPipeline:
                 )
                 # Continue — one broken detector should not stop others
 
-        # Apply confidence-based action assignment
+        # Apply confidence-based action assignment (thresholds from config)
+        blur_threshold = self.config.detection.thresholds.blur
+        warn_threshold = self.config.detection.thresholds.warn
         for detection in all_detections:
-            if detection.confidence >= 0.9:
+            if detection.confidence >= blur_threshold:
                 detection.action = "blur"
-            elif detection.confidence >= 0.6:
+            elif detection.confidence >= warn_threshold:
                 detection.action = "warn"
             else:
                 detection.action = "ignore"
