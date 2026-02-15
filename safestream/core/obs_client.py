@@ -165,10 +165,20 @@ class OBSClient:
             self._cancel_return_timer()
 
             # Save current scene (only if not already in privacy mode, to
-            # avoid overwriting the real previous scene with "Privacy Mode")
+            # avoid overwriting the real previous scene with "Privacy Mode").
+            # Also skip saving if OBS is already on the privacy scene — this
+            # happens when OBS starts on Privacy Mode or a previous return failed,
+            # and would cause auto-return to loop back to Privacy Mode itself.
             if not self._in_privacy_mode:
-                self._previous_scene = self._get_current_scene()
-                logger.debug(f"Saved previous scene: {self._previous_scene!r}")
+                current = self._get_current_scene()
+                if current and current != self._privacy_scene:
+                    self._previous_scene = current
+                    logger.debug(f"Saved previous scene: {self._previous_scene!r}")
+                elif current == self._privacy_scene:
+                    logger.warning(
+                        "OBS is already on Privacy Mode scene at detection time — "
+                        "previous scene not saved. Switch OBS to your main scene manually."
+                    )
 
             # Switch to privacy scene
             success = self._set_scene(self._privacy_scene)
