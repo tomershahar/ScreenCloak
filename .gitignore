@@ -20,5 +20,8 @@ config.local.yaml
 screencloak/logs/
 *.log
 
+# Internal planning docs — local only, never publish
+docs/internal/
+
 # macOS
 .DS_Store
