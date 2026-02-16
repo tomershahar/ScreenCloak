@@ -182,6 +182,18 @@ class ScreenCloak:
                 self._logger.info(
                     f"OBS connected: {self._config.obs.host}:{self._config.obs.port}"
                 )
+                # Verify the Privacy Mode scene exists in OBS
+                privacy_scene = self._config.obs.privacy_scene
+                if self._obs_client.verify_scene_exists(privacy_scene):
+                    self._logger.info(
+                        f"OBS scene '{privacy_scene}' found — ready to protect"
+                    )
+                else:
+                    self._logger.warning(
+                        f"OBS scene '{privacy_scene}' NOT found in OBS. "
+                        "Create it before streaming or ScreenCloak cannot switch scenes. "
+                        "See docs/OBS_SETUP.md for instructions."
+                    )
             else:
                 self._logger.warning(
                     "OBS not connected — detections will be logged but scenes "
@@ -275,7 +287,16 @@ class ScreenCloak:
 
                 # Update tray icon state
                 if self._tray is not None:
-                    if scan_result.should_blur:
+                    obs_disconnected = (
+                        self._obs_client is not None
+                        and hasattr(self._obs_client, "is_connected")
+                        and not self._obs_client.is_connected()
+                        and self._config.obs.enabled
+                        and not (bool(self.args.mock) or self.args.no_obs)
+                    )
+                    if obs_disconnected:
+                        self._tray.set_state("disconnected")  # yellow — OBS link lost
+                    elif scan_result.should_blur:
                         self._tray.set_state("alert")   # red — OBS switched
                     elif scan_result.should_warn:
                         self._tray.set_state("warn")    # orange — logged only

@@ -64,6 +64,11 @@ class OBSClient:
         self._lock = threading.Lock()
         self._connected = False
 
+        # Reconnect state
+        self._reconnect_thread: threading.Thread | None = None
+        self._stop_reconnect: threading.Event = threading.Event()
+        self._reconnect_interval: float = 5.0  # seconds between reconnect attempts
+
     # ------------------------------------------------------------------
     # Connection management
     # ------------------------------------------------------------------
@@ -123,6 +128,7 @@ class OBSClient:
         Safe to call even if not connected.
         """
         self._cancel_return_timer()
+        self._stop_reconnect.set()  # stop any running reconnect loop
 
         if self._ws is not None and self._connected:
             try:
@@ -264,6 +270,7 @@ class OBSClient:
             return scene_name
         except Exception as e:
             logger.debug(f"GetCurrentProgramScene failed: {e}")
+            self._mark_disconnected()
             return None
 
     def _set_scene(self, scene_name: str) -> bool:
@@ -285,7 +292,81 @@ class OBSClient:
             return True
         except Exception as e:
             logger.error(f"SetCurrentProgramScene({scene_name!r}) failed: {e}")
+            self._mark_disconnected()
             return False
+
+    def verify_scene_exists(self, scene_name: str) -> bool:
+        """
+        Check that a named scene exists in OBS.
+
+        Call this at startup after connect() to confirm the privacy scene
+        is configured. Returns False gracefully if not connected or query fails.
+
+        Args:
+            scene_name: Scene name to look for (exact match)
+
+        Returns:
+            True if the scene exists in OBS, False otherwise
+        """
+        if not self._connected or not self._ws:
+            return False
+        try:
+            from obswebsocket import requests as obs_req  # noqa: PLC0415
+
+            resp = self._ws.call(obs_req.GetSceneList())
+            scenes: list[dict[str, Any]] = resp.getScenes()
+            return any(s.get("sceneName") == scene_name for s in scenes)
+        except Exception as e:
+            logger.debug(f"GetSceneList failed: {e}")
+            return False
+
+    # ------------------------------------------------------------------
+    # Reconnect helpers
+    # ------------------------------------------------------------------
+
+    def _mark_disconnected(self) -> None:
+        """
+        Mark the connection as lost and start the background reconnect loop.
+
+        Safe to call from any thread. If a reconnect thread is already running
+        this is a no-op (one thread at a time).
+        """
+        self._connected = False
+        self._ws = None
+        logger.warning(
+            "OBS WebSocket connection lost — starting auto-reconnect loop "
+            f"(retrying every {self._reconnect_interval:.0f}s)"
+        )
+        self._start_reconnect()
+
+    def _start_reconnect(self) -> None:
+        """Start a background reconnect thread if one is not already running."""
+        if self._reconnect_thread is not None and self._reconnect_thread.is_alive():
+            return  # Already reconnecting
+
+        self._stop_reconnect.clear()
+        self._reconnect_thread = threading.Thread(
+            target=self._reconnect_loop,
+            daemon=True,
+            name="obs-reconnect",
+        )
+        self._reconnect_thread.start()
+
+    def _reconnect_loop(self) -> None:
+        """
+        Background thread: retry connect() until success or shutdown.
+
+        Runs until connect() succeeds or _stop_reconnect is set.
+        """
+        attempt = 0
+        while not self._stop_reconnect.is_set():
+            attempt += 1
+            logger.info(f"OBS reconnect attempt #{attempt}…")
+            if self.connect():
+                logger.info(f"OBS reconnected after {attempt} attempt(s)")
+                return
+            # Wait before next attempt (interruptible by _stop_reconnect)
+            self._stop_reconnect.wait(timeout=self._reconnect_interval)
 
     def _cancel_return_timer(self) -> None:
         """Cancel the pending return timer, if any."""

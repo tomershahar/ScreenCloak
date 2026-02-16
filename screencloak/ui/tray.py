@@ -13,10 +13,11 @@ except ImportError:
 
 # Icon colours for each state
 _COLORS: dict[str, tuple[int, int, int, int]] = {
-    "idle":  (128, 128, 128, 255),  # grey   — scanning, no detections yet
-    "clean": (0,   200, 0,   255),  # green  — screen is clear
-    "warn":  (255, 165, 0,   255),  # orange — low-confidence detection (logged only)
-    "alert": (220, 50,  50,  255),  # red    — high-confidence detection (OBS switched)
+    "idle":         (128, 128, 128, 255),  # grey   — scanning, no detections yet
+    "clean":        (0,   200, 0,   255),  # green  — screen is clear
+    "warn":         (255, 165, 0,   255),  # orange — low-confidence detection (logged only)
+    "alert":        (220, 50,  50,  255),  # red    — high-confidence detection (OBS switched)
+    "disconnected": (255, 200, 0,   255),  # yellow — OBS WebSocket connection lost
 }
 
 
@@ -55,7 +56,7 @@ class SystemTray:
         """Set when the user pauses scanning via the tray menu."""
         return self._pause_event
 
-    def set_state(self, state: Literal["idle", "clean", "warn", "alert"]) -> None:
+    def set_state(self, state: Literal["idle", "clean", "warn", "alert", "disconnected"]) -> None:
         """Update icon colour. Call from any thread."""
         self._state = state
         if self._icon is not None:

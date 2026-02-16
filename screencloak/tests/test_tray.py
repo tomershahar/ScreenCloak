@@ -63,6 +63,31 @@ def test_toggle_pause_sets_event() -> None:
         assert t._paused is False
 
 
+def test_set_state_disconnected() -> None:
+    """set_state('disconnected') is a valid tray state for OBS connection loss."""
+    with patch.dict("sys.modules", {"pystray": MagicMock(), "PIL": MagicMock(),
+                                     "PIL.Image": MagicMock(), "PIL.ImageDraw": MagicMock()}):
+        import importlib
+        import ui.tray as tray_module
+        importlib.reload(tray_module)
+        tray_module._PYSTRAY_AVAILABLE = True
+        t = tray_module.SystemTray(on_quit=lambda: None)
+        t.set_state("disconnected")
+        assert t._state == "disconnected"
+
+
+def test_disconnected_state_has_distinct_color() -> None:
+    """'disconnected' state must have its own entry in _COLORS."""
+    with patch.dict("sys.modules", {"pystray": MagicMock(), "PIL": MagicMock(),
+                                     "PIL.Image": MagicMock(), "PIL.ImageDraw": MagicMock()}):
+        import importlib
+        import ui.tray as tray_module
+        importlib.reload(tray_module)
+        assert "disconnected" in tray_module._COLORS, (
+            "'disconnected' must be a named color in _COLORS so the icon changes visually"
+        )
+
+
 def test_no_tray_when_pystray_unavailable() -> None:
     """start() is a no-op when pystray is not installed."""
     with patch.dict("sys.modules", {"pystray": MagicMock(), "PIL": MagicMock(),
