@@ -209,6 +209,7 @@ When ScreenCloak is running, a small circle icon appears in your menu bar (macOS
 | Green | Screen is clean | None |
 | **Orange** | Low-confidence detection (logged only) | **No scene switch** |
 | **Red** | High-confidence detection | **Switches to Privacy Mode** |
+| **Yellow** | OBS WebSocket disconnected | **None — reconnecting automatically** |
 
 **Orange vs Red — what's the difference?**
 
@@ -244,17 +245,30 @@ Example output:
 ```
 ScreenCloak Detection Benchmark
 ========================================================================
-  PASS  seed_phrase_12word.png   detected=seed_phrase    e2e=84ms
-  PASS  credit_card_visa.png     detected=credit_card    e2e=66ms
-  PASS  eth_address.png          detected=crypto_address e2e=66ms
-  PASS  false_positive_essay.png detected=(none)         e2e=118ms
+  PASS  seed_phrase_12word.png          detected=seed_phrase                e2e=81ms
+  PASS  seed_phrase_24word.png          detected=seed_phrase, seed_phrase   e2e=112ms
+  PASS  credit_card_visa.png            detected=credit_card                e2e=71ms
+  PASS  eth_address.png                 detected=crypto_address             e2e=68ms
+  PASS  mixed_content.png               detected=crypto_address, credit_card  e2e=105ms
+  PASS  false_positive_essay.png        detected=(none)                     e2e=124ms
 
+========================================================================
 SUMMARY
+========================================================================
   True Positive Rate:   5/5  (100.0%)
   False Positive Rate:  0/1  (0.0%)
-  E2E P95 latency:      118ms
 
-VERDICT: ✅ OVERALL PASS — ScreenCloak meets M1 acceptance criteria
+  OCR latency      P50: 82ms   P95: 124ms
+  E2E latency      P50: 84ms   P95: 125ms
+
+========================================================================
+VERDICT (M1 acceptance criteria)
+========================================================================
+  ✅  True positive rate ≥ 95%             100.0%
+  ✅  False positive rate ≤ 5%             0.0%
+  ✅  E2E P95 latency ≤ 500ms              125ms
+
+  ✅  OVERALL PASS — ScreenCloak meets M1 acceptance criteria
 ```
 
 To benchmark raw OCR engine performance (latency only, no detection pipeline):
