@@ -67,7 +67,7 @@ T+5400ms  Twitch/YouTube broadcasts the Privacy Mode frame (safe)
 Your viewers see ~400ms of the sensitive content before Privacy Mode appears.
 That is the V1 exposure window — significantly harder to capture than a full 10-second exposure.
 
-For a deeper explanation see [OBS_STREAM_DELAY_SETUP.md](./OBS_STREAM_DELAY_SETUP.md).
+For a deeper explanation — including Option B (Render Delay Filter) and a delay length comparison table — see [Stream Delay Deep Dive](./OBS_STREAM_DELAY_SETUP.md).
 
 ---
 

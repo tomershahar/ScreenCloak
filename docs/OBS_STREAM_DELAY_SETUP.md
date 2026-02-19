@@ -1,42 +1,22 @@
-# OBS Stream Delay Setup Guide
+# Stream Delay — Deep Dive
 
-**This step is required for ScreenCloak to protect you.**
-
-Without a stream delay, frames leave your computer ~50ms after they appear on screen. ScreenCloak's OCR detection takes ~200–500ms. By the time ScreenCloak reacts, the sensitive frame has already been uploaded to Twitch.
+> This is a supplementary guide. For the complete OBS setup walkthrough, see [OBS Setup Guide](./OBS_SETUP.md).
 
 ---
 
-## Step 1: Enable OBS WebSocket Server
+## Why Stream Delay Is Required
 
-1. Open OBS Studio
-2. Go to **Tools → WebSocket Server Settings**
-3. Check **Enable WebSocket server**
-4. Set **Server Port** to `4455`
-5. Optionally set a **Server Password** (recommended)
-6. Click **Apply** then **OK**
+Without a stream delay, OBS encodes and uploads frames ~50ms after they appear on your screen. ScreenCloak's OCR detection takes ~200–500ms. By the time ScreenCloak reacts, the sensitive frame has already been uploaded to Twitch.
+
+A stream delay creates a buffer between what appears on your screen and what your viewers see — giving ScreenCloak time to react before the frame goes out.
 
 ---
 
-## Step 2: Create a "Privacy Mode" Scene
-
-1. In the **Scenes** panel, click **+**
-2. Name it exactly: `Privacy Mode`
-3. Add a **Color Source** (black background)
-4. Add a **Text (GDI+)** source with the message:
-   ```
-   Sensitive information detected — resuming shortly
-   ```
-5. Optionally add your logo or a countdown timer
-
-> The scene name must match `privacy_scene` in `config.yaml` exactly (case-sensitive).
-
----
-
-## Step 3: Add Stream Delay ⚠️ CRITICAL
-
-This is the most important step. Without it, ScreenCloak **cannot** prevent sensitive data from reaching viewers.
+## Two Ways to Add Stream Delay
 
 ### Option A: OBS Stream Delay (Recommended)
+
+Applies to the entire stream output.
 
 1. Go to **Settings → Advanced**
 2. Find the **Stream Delay** section
@@ -44,7 +24,9 @@ This is the most important step. Without it, ScreenCloak **cannot** prevent sens
 4. Set duration to **5000 ms** (5 seconds)
 5. Click **Apply** then **OK**
 
-### Option B: Render Delay Filter (Alternative)
+### Option B: Render Delay Filter (Per-source alternative)
+
+Applies only to a single source (e.g. your screen capture). Useful if you need different delays on different sources.
 
 1. In the **Sources** panel, right-click your main video capture source
 2. Select **Filters**
@@ -52,7 +34,7 @@ This is the most important step. Without it, ScreenCloak **cannot** prevent sens
 4. Set delay to **5000 ms**
 5. Click **Close**
 
-> Use one method, not both. Option A applies to the entire stream output. Option B applies to a single source.
+> Use one method, not both. If you apply both, delays stack.
 
 ---
 
@@ -60,72 +42,27 @@ This is the most important step. Without it, ScreenCloak **cannot** prevent sens
 
 ```
 T + 0ms:    Secret appears on your screen
-T + 0ms:    ScreenCloak starts OCR (you see it in real-time)
+T + 0ms:    ScreenCloak starts OCR (you see it in real-time, no delay for you)
 T + 400ms:  ScreenCloak detects it → switches OBS to Privacy Mode
-T + 5000ms: Twitch starts broadcasting the frame from T=0 (secret)
+T + 5000ms: Twitch starts broadcasting the frame from T=0 (the secret)
 T + 5400ms: Twitch starts broadcasting the Privacy Mode frame (safe)
 ```
 
-Your viewers see ~400ms of the sensitive content as a brief flash before the Privacy Mode screen appears. This is the V1 exposure window.
+Your viewers see ~400ms of the sensitive content as a brief flash. This is the V1 exposure window.
 
-**With a 2-second delay:** exposure window is still ~400ms, but you have less buffer if ScreenCloak is slow on a given frame.
-
-**With a 5-second delay:** you have a 4.6-second safety margin beyond the typical detection time.
-
----
-
-## Step 4: Configure ScreenCloak
-
-Edit `config.yaml`:
-
-```yaml
-obs:
-  host: localhost
-  port: 4455
-  password: "your-obs-password"   # Leave empty string if no password set
-  privacy_scene: "Privacy Mode"   # Must match OBS scene name exactly
-  auto_return: true               # Return to previous scene automatically
-  return_delay: 3                 # Seconds to stay on Privacy Mode before returning
-```
-
----
-
-## Step 5: Verify the Setup
-
-Run ScreenCloak in mock mode to test the OBS connection:
-
-```bash
-cd screencloak
-python main.py --mock data/test_images/seed_phrase_12word.png
-```
-
-You should see:
-1. ScreenCloak logs: `OBS connected — localhost:4455`
-2. OBS switches to your **Privacy Mode** scene
-3. After `return_delay` seconds, OBS returns to your previous scene
-
-If OBS doesn't switch scenes, check:
-- OBS WebSocket is enabled and on port 4455
-- `config.yaml` password matches the OBS WebSocket password
-- The scene name in `config.yaml` matches exactly (case-sensitive)
-
----
-
-## Troubleshooting
-
-| Problem | Likely cause | Fix |
+| Stream delay | Safety margin | Notes |
 |---|---|---|
-| `Connection refused` on port 4455 | WebSocket server not enabled | Enable in Tools → WebSocket Server Settings |
-| Scene doesn't switch | Wrong scene name | Check `privacy_scene` in config matches OBS exactly |
-| Authentication error | Wrong password | Update `password` in config.yaml |
-| Viewers still see secret | No stream delay set | Complete Step 3 above |
-| OBS switches but too late | Stream delay too short | Increase to 5000ms |
+| 2 seconds | 1.6s margin | Minimum viable; risky if OCR is slow on a given frame |
+| 5 seconds | 4.6s margin | Recommended — comfortable buffer |
+| 10 seconds | 9.6s margin | Maximum protection; noticeable lag for viewers reacting to your stream |
+
+With GPU acceleration (Apple Silicon MPS or NVIDIA CUDA), detection typically runs in 100–200ms, shrinking the exposure window further.
 
 ---
 
 ## V2 Roadmap: Zero-Leak Protection
 
-V1 uses a Python sidecar + stream delay. The exposure window is the OCR detection latency (~200–400ms).
+V1 uses a Python sidecar + stream delay. The exposure window is the OCR detection latency (~200–400ms), which cannot be eliminated in this architecture.
 
 V2 will be a **native C++ OBS plugin** that intercepts frames directly inside the encoding pipeline — before they are ever queued for upload. This eliminates the exposure window entirely, with no stream delay required.
 
