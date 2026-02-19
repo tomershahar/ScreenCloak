@@ -155,9 +155,9 @@ def make_credit_card_visa() -> Path:
     """
     img = _make_multiline_image(
         [VISA_CARD, "Expires: 12/28   CVV: 737"],
-        width=700,
+        width=1200,
         line_height=55,
-        font_size=36,
+        font_size=28,
     )
     path = OUTPUT_DIR / "credit_card_visa.png"
     img.save(path)
